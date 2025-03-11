@@ -13,14 +13,28 @@ test.describe("Login", () => {
     await adminPage.openURL("/#/admin");
   });
 
-  test("Administration user is able to login with valid usernam and password @sanity @login", async () => {
+  test("Administration user is able to login with valid username and password @sanity @login", async ({page}) => {
     await adminPage.doLogin("admin", "password");
-    await header.logoutLink.isVisible();
+    await expect(header.logoutLink).toBeVisible();
+});
+
+  test.skip("The user is not able to login with empty username @login", async () => {
+    await adminPage.doLogin("", "password");
+    await expect(adminPage.passwordField).toHaveAttribute("style", "border: 1px solid red;");
   });
 
-  test("The user is not able to login with empty username @login", async () => {});
+  test.skip("The user is not able to login with empty password @login", async () => {
+    await adminPage.doLogin("admin", "");
+    await expect(adminPage.passwordField).toHaveAttribute("style", "border: 1px solid red;");
+  });
 
-  test("The user is not able to login with empty password @login", async () => {});
+  test.skip("The user is not able to login with incorrect password @login", async () => {
+    await adminPage.doLogin("admin", "wrongpassword");
+    await expect(adminPage.loginButton).toBeVisible();
+  });
 
-  test("The user is not ablr to login with incorrect password @login", async () => {});
+  test.skip("The user is not able to login with incorrect username @login", async () => {
+    await adminPage.doLogin("wronguser", "password");
+    await expect(adminPage.loginButton).toBeVisible();
+  });
 });

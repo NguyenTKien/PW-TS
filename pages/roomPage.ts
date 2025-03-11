@@ -1,5 +1,6 @@
 import { Page, Locator } from "@playwright/test";
 import { BaseTest } from "./basetest";
+import {  RoomAmenities, RoomType } from "../utils/data_helper";
 
 export class RoomPage extends BaseTest {
   readonly roomIdField: Locator;
@@ -13,7 +14,10 @@ export class RoomPage extends BaseTest {
   readonly radioCheckbox: Locator;
   readonly viewsCheckbox: Locator;
   readonly createButton: Locator;
-  readonly roomRecord: Locator;
+  readonly listRoomRecord: Locator;
+  readonly editButton: Locator;
+  readonly errorMessage: Locator;
+  readonly updateButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -30,7 +34,11 @@ export class RoomPage extends BaseTest {
     this.radioCheckbox = page.getByLabel("Radio");
     this.viewsCheckbox = page.getByLabel("Views");
     this.createButton = page.locator("#createRoom");
-    this.roomRecord = page.getByTestId("roomlisting").last();
+    this.listRoomRecord = page.getByTestId("roomlisting");
+    //Edit button locator
+    this.editButton = page.locator("//button[contains(text(),'Edit')]");
+    this.errorMessage = page.locator("//div[@class='alert alert-danger']/p");
+    this.updateButton = page.locator("//button[@id='update']");
   }
 
   async selectRoomType(type: RoomType | null) {
@@ -62,7 +70,7 @@ export class RoomPage extends BaseTest {
     roomID: string,
     type: RoomType | null,
     accesssible: boolean,
-    price: number,
+    price: number | null,
     roomDetails: RoomAmenities
   ) {
     await this.roomIdField.fill(roomID);
@@ -72,21 +80,79 @@ export class RoomPage extends BaseTest {
     await this.selectRoomAmenities(roomDetails);
     await this.createButton.click();
   }
+
+  getRoomRecord(roomName: string): Locator {
+    return this.page.locator(`//div[@data-testid='roomlisting'][.//p[contains(@id,'${roomName}')]]`).last();
+  }
+
+  getRoomNameLocator(roomRecord: Locator): Locator {
+    return roomRecord.locator('p[id*=roomName]');
+  }
+
+  getRoomTypeLocator(roomRecord: Locator): Locator {
+    return roomRecord.locator('p[id*=type]');
+  }
+
+  getRoomAccessibleLocator(roomRecord: Locator): Locator {
+    return roomRecord.locator('p[id*=accessible]');
+  }
+
+  getRoomPriceLocator(roomRecord: Locator): Locator {
+    return roomRecord.locator('p[id*=roomPrice]');
+  }
+
+  getRoomDetailsLocator(roomRecord: Locator): Locator {
+    return roomRecord.locator('p[id*=details]');
+  }
+
+  getErrorMessageLocator(): Locator {
+    return this.errorMessage;
+  }
+
+  getEditButtonLocator(): Locator {
+    return this.editButton;
+  }
+
+  getUpdateRoomValueLocator(roomValue: string): Locator {
+    return this.page.locator(`//input[@value='${roomValue}']`);
+  }
+
+  getUpdateSelectLocator(selectType: string): Locator {
+    return this.page.locator(`//select[@id='${selectType}']`);
+  }
+
+  async clickToUpdateButton(): Promise<void> {
+    this.updateButton.isEnabled().then(() => {
+      this.updateButton.click();
+    });
+  }
+
+  async clickToDeleteButton(roomName: string): Promise<void> {
+    const deleteRoomBooking = this.page.locator(`//div[@data-testid='roomlisting'][.//p[contains(@id,'${roomName}')]]//span`);
+    deleteRoomBooking.isEnabled().then(() => {
+      deleteRoomBooking.click();
+    })
+  }
+
+  async getListRoomRecordCount(): Promise<number> {
+    const count = await this.listRoomRecord.count();
+    return count;
+  }
+
 }
 
-export enum RoomType {
-  SINGLE = "Single",
-  TWIN = "Twin",
-  DOUBLE = "Double",
-  FAMILY = "Family",
-  SUITE = "Suite",
+export function getAmenitiesAsList(roomAmenities: RoomAmenities): string[] {
+  const amenities: string[] = [];
+  if (roomAmenities.wifi) amenities.push("WiFi");
+  if (roomAmenities.TV) amenities.push("TV");
+  if (roomAmenities.Radio) amenities.push("Radio");
+  if (roomAmenities.Refreshment) amenities.push("Refreshments");
+  if (roomAmenities.safe) amenities.push("Safe");
+  if (roomAmenities.views) amenities.push("Views");
+  return amenities;
 }
 
-export type RoomAmenities = {
-  wifi: boolean;
-  TV: boolean;
-  Radio: boolean;
-  Refreshment: boolean;
-  safe: boolean;
-  views: boolean;
-};
+export function getRoomDetailsFromAmenities(roomAmenities: RoomAmenities) {
+  const amenities: string[] = getAmenitiesAsList(roomAmenities);
+  return amenities.length == 0 ? 'No features added to the room' : amenities.join(", ");
+}
