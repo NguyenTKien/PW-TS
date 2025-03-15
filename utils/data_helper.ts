@@ -1,3 +1,5 @@
+import { get } from "http";
+import { getCurrentDate, getFutureDate, getRanDomNumber } from "./helper";
 
 export enum RoomType {
   SINGLE = "Single",
@@ -16,7 +18,7 @@ export type RoomAmenities = {
   views: boolean;
 };
 
-export class BookingInfo {
+export class RoomInfo {
   constructor(
     public roomName: string,
     public type: RoomType,
@@ -26,8 +28,19 @@ export class BookingInfo {
   ) {}
 }
 
-export const defaultRoomBooking: BookingInfo = {
-  roomName: "102",
+export class BookingInfo {
+  constructor(
+    firstName: string,
+    lastName: string,
+    room: RoomInfo['roomName'],
+    depositPaid: boolean,
+    checkIn: string,
+    checkOut: string
+  ) {}
+}
+
+export const defaultRoomBooking: RoomInfo = {
+  roomName: getRanDomNumber(100, 999).toString(),
   type: RoomType.DOUBLE,
   accesssible: true,
   price: 150,
@@ -41,7 +54,7 @@ export const defaultRoomBooking: BookingInfo = {
   },
 };
 
-export const updateRoomBooking: BookingInfo = {
+export const updateRoomBooking: RoomInfo = {
   roomName: "103",
   type: RoomType.SUITE,
   accesssible: true,
@@ -54,4 +67,13 @@ export const updateRoomBooking: BookingInfo = {
     safe: false,
     views: true,
   },
+};
+
+export const defaultBooking: BookingInfo = {
+  firstName: "John",
+  lastName: "Doe",
+  room: defaultRoomBooking.roomName,
+  depositPaid: true,
+  checkIn: getCurrentDate(),
+  checkOut: getFutureDate(2),
 };

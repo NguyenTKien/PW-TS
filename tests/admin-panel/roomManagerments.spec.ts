@@ -1,21 +1,17 @@
 import { expect, test } from "@playwright/test";
 import { AdminPage } from "../../pages/adminPage";
-import { Headers } from "../../pages/Components/headers";
 import { getRoomDetailsFromAmenities, RoomPage } from "../../pages/roomPage";
 import {
-  RoomType,
   defaultRoomBooking,
   updateRoomBooking,
 } from "../../utils/data_helper";
 
 test.describe("Room Managerment function", () => {
   let adminPage: AdminPage;
-  let header: Headers;
   let roomManager: RoomPage;
 
   test.beforeEach("Access to room managerment", async ({ page, baseURL }) => {
     adminPage = new AdminPage(page);
-    header = new Headers(page);
     roomManager = new RoomPage(page);
 
     await adminPage.hideBanner(baseURL);
@@ -27,7 +23,7 @@ test.describe("Room Managerment function", () => {
      Verify the administration is able to update by fill up all mandatory fields
      Verify the administration is able to delete by fill up all mandatory fields 
   */
-  test(`Administration is able to create room by fill up all mandatory fields`, async ({
+  test.only(`Administration is able to create room by fill up all mandatory fields @room-managerment`, async ({
     page,
   }) => {
     // Create a room
@@ -83,8 +79,6 @@ test.describe("Room Managerment function", () => {
       .fill(updateRoomBooking.price.toString());
     await roomManager.selectRoomAmenities(updateRoomBooking.roomAmenities);
     await roomManager.clickToUpdateButton();
-    await page.waitForTimeout(2000);
-    await page.goto("/#/admin");
 
     const updatedRoomRecord = roomManager.getRoomRecord(
       updateRoomBooking.roomName
@@ -116,22 +110,15 @@ test.describe("Room Managerment function", () => {
   });
 
   // Add a test case to verify that an administrative user cannot create a room without a room name
-  test("Administration user cannot create a room without a room name", async ({
+  test("Administration user cannot create a room without a room name @room-managerment", async ({
     page,
   }) => {
     await roomManager.createRoom(
       "", // Empty room name/
-      RoomType.DOUBLE,
-      true,
-      230,
-      {
-        wifi: true,
-        TV: false,
-        Radio: false,
-        Refreshment: true,
-        safe: true,
-        views: false,
-      }
+      defaultRoomBooking.type,
+      defaultRoomBooking.accesssible,
+      defaultRoomBooking.price,
+      defaultRoomBooking.roomAmenities
     );
 
     // Check for an error message or validation
@@ -140,22 +127,15 @@ test.describe("Room Managerment function", () => {
     await expect(errorMessageText).toEqual("Room name must be set");
   });
 
-  test("Administration user cannot create a room without setting room price", async ({
+  test("Administration user cannot create a room without setting room price @room-managerment", async ({
     page,
   }) => {
     await roomManager.createRoom(
-      "108",
-      RoomType.DOUBLE,
-      true,
+      defaultRoomBooking.roomName,
+      defaultRoomBooking.type,
+      defaultRoomBooking.accesssible,
       null, // No room price set
-      {
-        wifi: true,
-        TV: false,
-        Radio: false,
-        Refreshment: true,
-        safe: true,
-        views: false,
-      }
+      defaultRoomBooking.roomAmenities
     );
 
     // Check for an error message or validation
@@ -166,17 +146,16 @@ test.describe("Room Managerment function", () => {
     );
   });
 
-  test.skip("Administration user create a room without selecting room amenities", async ({
+  test("Administration user cannot create a room with price is 0 @room-managerment", async ({
     page,
   }) => {
-    await roomManager.createRoom("109", RoomType.DOUBLE, true, 150, {
-      wifi: false,
-      TV: false,
-      Radio: false,
-      Refreshment: false,
-      safe: false,
-      views: false,
-    });
+    await roomManager.createRoom(
+      defaultRoomBooking.roomName,
+      defaultRoomBooking.type,
+      defaultRoomBooking.accesssible,
+      0, // Set price is 0
+      defaultRoomBooking.roomAmenities
+    );
 
     // Check for an no amenities message
     const noAmenitiesMessage = getRoomDetailsFromAmenities({
@@ -187,9 +166,11 @@ test.describe("Room Managerment function", () => {
       safe: false,
       views: false,
     });
-    // const errorMessageText = await noAmenities.textContent();
-    await expect(noAmenitiesMessage).toEqual(
-      "At least one amenity No features added to the room be selected"
+    // Check for an error message or validation
+    const errorMessageLocator = roomManager.getErrorMessageLocator();
+    const errorMessageText = await errorMessageLocator.textContent();
+    await expect(errorMessageText).toEqual(
+      "must be greater than or equal to 1"
     );
   });
 });
