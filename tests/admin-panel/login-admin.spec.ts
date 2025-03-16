@@ -19,7 +19,7 @@ test.describe("Login", () => {
   });
 
   test("Administration user is able to login with valid username and password @sanity @login", async ({page}) => {
-    await adminPage.doLogin(process.env.USERNAME?.toLowerCase(), process.env.PASSWORD);
+    await adminPage.doLogin(process.env.EMAIL?.toLowerCase(), process.env.PASSWORD);
     await expect(header.roomsLink).toBeVisible();
 });
 
@@ -28,18 +28,18 @@ test.describe("Login", () => {
     await expect(adminPage.errorMessage).toBeVisible();
   });
 
-  test.skip("The user is not able to login with empty password @login", async () => {
-    await adminPage.doLogin(process.env.USERNAME?.toLowerCase(), "");
+  test("The user is not able to login with empty password @login", async () => {
+    await adminPage.doLogin(process.env.EMAIL?.toLowerCase(), "");
     await expect(adminPage.errorMessage).toBeVisible();
   });
 
-  test.skip("The user is not able to login with incorrect password @login", async () => {
-    await adminPage.doLogin(process.env.USERNAME?.toLowerCase(), process.env.PASSWORD);
+  test("The user is not able to login with incorrect password @login", async () => {
+    await adminPage.doLogin(process.env.EMAIL?.toLowerCase(), process.env.PASSWORD);
     await expect(adminPage.loginButton).toBeVisible();
   });
 
   test("The user is not able to login with incorrect username @login", async () => {
-    await adminPage.doLogin(process.env.USERNAME?.toLowerCase(), process.env.PASSWORD);
+    await adminPage.doLogin(process.env.EMAIL?.toLowerCase(), process.env.PASSWORD);
     await expect(adminPage.loginButton).toBeVisible();
   });
 });

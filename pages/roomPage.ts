@@ -130,7 +130,7 @@ export class RoomPage extends BaseTest {
       this.updateButton.click().then(() => {
         this.page.waitForLoadState("load", { timeout: 5000 }).then(() => {
           this.page.waitForLoadState("domcontentloaded");
-          this.page.goto("/#/admin");
+          this.page.goto("/admin");
         });
       });
     });

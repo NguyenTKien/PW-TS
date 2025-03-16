@@ -5,27 +5,36 @@ import {
   defaultRoomBooking,
   updateRoomBooking,
 } from "../../utils/data_helper";
+import { AuthenticationApi } from "../../apis/authApi";
+import { RoomApi } from "../../apis/roomApi";
 
 test.describe("Room Managerment function", () => {
   let adminPage: AdminPage;
   let roomManager: RoomPage;
+  let authApi: AuthenticationApi;
+  let roomApi: RoomApi;
 
-  test.beforeEach("Access to room managerment", async ({ page, baseURL }) => {
+  test.beforeEach("Access to room managerment", async ({ page, request }) => {
     adminPage = new AdminPage(page);
     roomManager = new RoomPage(page);
 
-    await adminPage.hideBanner(baseURL);
-    await adminPage.openURL("/#/admin/");
-    await adminPage.doLogin("admin", "password");
+    authApi = new AuthenticationApi(request);
+    roomApi = new RoomApi(request);
+
+    await adminPage.openURL("/admin/");
+    await authApi.signIn("admin", "password");
   });
   /*
      Verify the administration is able to create by fill up all mandatory fields
      Verify the administration is able to update by fill up all mandatory fields
      Verify the administration is able to delete by fill up all mandatory fields 
   */
-  test.only(`Administration is able to create room by fill up all mandatory fields @room-managerment`, async ({
+  test(`Administration is able to create room by fill up all mandatory fields @room-managerment @sanity`, async ({
     page,
   }) => {
+    //Delete all rooms
+
+
     // Create a room
     await roomManager.createRoom(
       defaultRoomBooking.roomName,
@@ -61,8 +70,18 @@ test.describe("Room Managerment function", () => {
       roomManager.getRoomDetailsLocator(roomRecord),
       `${defaultRoomBooking.roomName} has correct details: ${amenitiesString}`
     ).toContainText(amenitiesString);
+  });
 
+  test.only(`Administration is able to edit room by fill up all mandatory fields @room-managerment @sanity`, async ({
+    page,
+  }) => {
+    await roomApi.deleteAllRooms(defaultRoomBooking.roomName);
+    //Create the room by API
+    await roomApi.createRoom(defaultRoomBooking.roomName, defaultRoomBooking.type, defaultRoomBooking.accesssible, defaultRoomBooking.price, defaultRoomBooking.roomAmenities);
+    await page.reload();
     //Edit the room
+    const roomRecord = roomManager.getRoomRecord(defaultRoomBooking.roomName);
+
     await roomManager.getRoomNameLocator(roomRecord).click();
     await roomManager.getEditButtonLocator().click();
     await roomManager
@@ -103,14 +122,15 @@ test.describe("Room Managerment function", () => {
     // Delete the room
     await page.waitForLoadState("networkidle");
     await roomManager.clickToDeleteButton(updateRoomBooking.roomName);
+    // await roomApi.deleteAllRooms(updateRoomBooking.roomName);
 
     await page.waitForTimeout(3000);
     const listBookingRecord = await roomManager.getListRoomRecordCount();
-    await expect(listBookingRecord).toEqual(1);
+    await expect(listBookingRecord).toEqual(0);
   });
 
   // Add a test case to verify that an administrative user cannot create a room without a room name
-  test("Administration user cannot create a room without a room name @room-managerment", async ({
+  test("Administration user cannot create a room without a room name @room-managerment @sanity", async ({
     page,
   }) => {
     await roomManager.createRoom(
