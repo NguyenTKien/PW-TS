@@ -1,10 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { AdminPage } from "../../pages/adminPage";
 import { getRoomDetailsFromAmenities, RoomPage } from "../../pages/roomPage";
-import {
-  defaultRoomBooking,
-  updateRoomBooking,
-} from "../../utils/data_helper";
+import { defaultRoomBooking, updateRoomBooking } from "../../utils/data_helper";
 import { AuthenticationApi } from "../../apis/authApi";
 import { RoomApi } from "../../apis/roomApi";
 
@@ -22,18 +19,15 @@ test.describe("Room Managerment function", () => {
     roomApi = new RoomApi(request);
 
     await adminPage.openURL("/admin/");
-    await authApi.signIn("admin", "password");
   });
   /*
      Verify the administration is able to create by fill up all mandatory fields
-     Verify the administration is able to update by fill up all mandatory fields
-     Verify the administration is able to delete by fill up all mandatory fields 
   */
   test(`Administration is able to create room by fill up all mandatory fields @room-managerment @sanity`, async ({
     page,
   }) => {
     //Delete all rooms
-
+    await roomApi.deleteAllRooms();
 
     // Create a room
     await roomManager.createRoom(
@@ -72,12 +66,21 @@ test.describe("Room Managerment function", () => {
     ).toContainText(amenitiesString);
   });
 
-  test.only(`Administration is able to edit room by fill up all mandatory fields @room-managerment @sanity`, async ({
+  /* 
+  Verify the administration is able to update by fill up all mandatory fields
+  Verify the administration is able to delete by fill up all mandatory fields 
+  */
+  test(`Administration is able to edit room by fill up all mandatory fields @room-managerment @sanity`, async ({
     page,
   }) => {
-    await roomApi.deleteAllRooms(defaultRoomBooking.roomName);
     //Create the room by API
-    await roomApi.createRoom(defaultRoomBooking.roomName, defaultRoomBooking.type, defaultRoomBooking.accesssible, defaultRoomBooking.price, defaultRoomBooking.roomAmenities);
+    await roomApi.createRoom(
+      defaultRoomBooking.roomName,
+      defaultRoomBooking.type,
+      defaultRoomBooking.accesssible,
+      defaultRoomBooking.price,
+      defaultRoomBooking.roomAmenities
+    );
     await page.reload();
     //Edit the room
     const roomRecord = roomManager.getRoomRecord(defaultRoomBooking.roomName);
@@ -122,7 +125,6 @@ test.describe("Room Managerment function", () => {
     // Delete the room
     await page.waitForLoadState("networkidle");
     await roomManager.clickToDeleteButton(updateRoomBooking.roomName);
-    // await roomApi.deleteAllRooms(updateRoomBooking.roomName);
 
     await page.waitForTimeout(3000);
     const listBookingRecord = await roomManager.getListRoomRecordCount();

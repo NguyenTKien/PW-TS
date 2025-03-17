@@ -1,4 +1,7 @@
-import { get } from "http";
+import {
+  BookingDates,
+  User,
+} from "../common/interfaces";
 import { getCurrentDate, getFutureDate, getRanDomNumber } from "./helper";
 
 export enum RoomType {
@@ -32,7 +35,7 @@ export class BookingInfo {
   constructor(
     firstName: string,
     lastName: string,
-    room: RoomInfo['roomName'],
+    room: RoomInfo["roomName"],
     depositPaid: boolean,
     checkIn: string,
     checkOut: string
@@ -76,4 +79,19 @@ export const defaultBooking: BookingInfo = {
   depositPaid: true,
   checkIn: getCurrentDate(),
   checkOut: getFutureDate(2),
+};
+
+export const bookingcheck: BookingDates = {
+  bookingdates: {
+    checkin: "2025-03-17",
+    checkout: "2025-03-20",
+  },
+  depositpaid: true,
+};
+
+export const user: User = {
+  email: "christinaakfl@gmail.com",
+  firstname: "Alovado",
+  lastname: "Christina",
+  phone: "09968493552",
 };
