@@ -18,6 +18,13 @@ export class RoomPage extends BaseTest {
   readonly editButton: Locator;
   readonly errorMessage: Locator;
   readonly updateButton: Locator;
+  readonly editBookingButton: Locator;
+  readonly firstnameEdit: Locator;
+  readonly lastnameEdit: Locator;
+  readonly depositPaidEdit: Locator;
+  readonly checkinEdit: Locator;
+  readonly checkoutEdit: Locator;
+  readonly confirmBookingEditButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -39,6 +46,14 @@ export class RoomPage extends BaseTest {
     this.editButton = page.locator("//button[contains(text(),'Edit')]");
     this.errorMessage = page.locator("//div[@class='alert alert-danger']/p");
     this.updateButton = page.locator("//button[@id='update']");
+    //Room details
+    this.editBookingButton = page.locator("//span[contains(@class, 'bookingEdit')]");
+    this.confirmBookingEditButton = page.locator("//span[contains(@class, 'confirmBookingEdit')]");
+    this.firstnameEdit = page.locator("//input[@name='firstname']");
+    this.lastnameEdit = page.locator("//input[@name='lastname']");
+    this.depositPaidEdit = page.locator("//select[@name='depositpaid']");
+    this.checkinEdit = page.locator("//div[contains(@class, 'datepicker')]//input").first();
+    this.checkoutEdit = page.locator("//div[contains(@class, 'datepicker')]//input").last();
   }
 
   async selectRoomType(type: RoomType | null) {
@@ -148,6 +163,28 @@ export class RoomPage extends BaseTest {
   async getListRoomRecordCount(): Promise<number> {
     const count = await this.listRoomRecord.count();
     return count;
+  }
+
+  async clickToUpdateBooking() {
+    this.editBookingButton.click();
+    this.page.waitForEvent("load");
+  }
+
+  async clickToConfirmUpdateBooking() {
+    this.editBookingButton.click();
+    this.page.waitForEvent("load");
+  }
+
+  async updateBookingRoom(firstname: string, lastname: string, checkinDate: string, checkoutDate: string, depositPaid: boolean) {
+    this.firstnameEdit.clear().then(() => {
+      this.firstnameEdit.fill(firstname);
+    })
+    this.lastnameEdit.clear().then(() => {
+      this.lastnameEdit.fill(lastname);
+    })
+    this.depositPaidEdit.selectOption(depositPaid ? "true" : "false");
+    this.checkinEdit.fill(checkinDate);
+    this.checkoutEdit.fill(checkoutDate);
   }
 }
 

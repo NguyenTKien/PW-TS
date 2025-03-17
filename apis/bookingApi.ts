@@ -48,10 +48,10 @@ export class BookingApi extends BaseAPI {
     const allRooms: Room[] = getRoomData.rooms;
     console.log(allRooms);
     if (allRooms.length > 0) {
-        console.log(allRooms[0].roomid)
-        return allRooms[0].roomid;
+      console.log(allRooms[0].roomid)
+      return allRooms[0].roomid;
     } else {
-        throw new Error("No rooms available");
+      throw new Error("No rooms available");
     }
   }
 
@@ -61,7 +61,7 @@ export class BookingApi extends BaseAPI {
     const getBookingDatas = JSON.parse(await response.text());
     const allBookings = getBookingDatas.bookings;
     console.log(allBookings);
-    const bookingList: { bookingid: number }[] = allBookings.map((booking: {bookingid: number}) => booking);
-    for (const book of bookingList) await this.deleteBooking(book.bookingid); 
+    const bookingList: { bookingid: number }[] = allBookings.map((booking: { bookingid: number }) => booking);
+    for (const book of bookingList) await this.deleteBooking(book.bookingid);
   }
 }

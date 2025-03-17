@@ -2,10 +2,9 @@ import { Headers } from "../../pages/Components/headers";
 import { expect, test } from "@playwright/test";
 import { BookingPage } from "../../pages/bookingPage";
 import { LoginPage } from "../../common/login_page";
-import { updateRoomBooking } from "../../utils/data_helper";
+import { bookingcheck, defaultBooking, defaultRoomBooking, updateRoomBooking, user } from "../../utils/data_helper";
 import { getExtendImages } from "../../utils/helper";
-import { getAmenitiesAsList } from "../../pages/roomPage";
-import { Room } from "../../common/interfaces";
+import { getAmenitiesAsList, RoomPage } from "../../pages/roomPage";
 import { BookingApi } from "../../apis/bookingApi";
 
 test.describe("Test Booking Managerment Fuctions", () => {
@@ -13,6 +12,7 @@ test.describe("Test Booking Managerment Fuctions", () => {
   let header: Headers;
   let bookingPage: BookingPage;
   let bookingApi: BookingApi;
+  let roomPage: RoomPage
 
   test.beforeEach(
     "Access to booking managerment",
@@ -21,21 +21,30 @@ test.describe("Test Booking Managerment Fuctions", () => {
       header = new Headers(page);
       bookingPage = new BookingPage(page);
       bookingApi = new BookingApi(request);
+      roomPage = new RoomPage(page);
     }
   );
 
-  test.only("auth @sanity", async ({ page }) => {
+  test.only("The adminitration user is able to edit the booking room @sanity", async ({ page }) => {
     await loginPage.openURL("/admin");
     console.log(process.env.BASE_API_URL + '/room ========');
-    const roomId = (await bookingApi.getfirstRoomID()).toString();
-    bookingApi.deleteAllBookingsInFirstRoom(roomId);
+    // Delete all booking in the first room
+    const roomId = (await bookingApi.getfirstRoomID());
+    await bookingApi.deleteAllBookingsInFirstRoom(roomId.toString());
+    // Create a booking in the first room
+    await bookingApi.createBooking(roomId, user.email, user.firstname, user.lastname, user.phone, bookingcheck.depositpaid, bookingcheck.bookingdates.checkin, bookingcheck.bookingdates.checkout);
+    // Edit a booking
+    const roomRecord = roomPage.getRoomRecord("101");
+    await roomPage.getRoomNameLocator(roomRecord).click();
 
-
-    await header.clickOnHeaderLink("Report");
-    await expect(bookingPage.bookingPage).toBeVisible();
-    // await page.waitForTimeout(3000);
-    await page
-      .locator("//div[@class='rbc-date-cell'][string()='17']").click();
+    await roomPage.clickToUpdateBooking();
+    await roomPage.updateBookingRoom(user.firstname, user.lastname, bookingcheck.bookingdates.checkin, bookingcheck.bookingdates.checkout, bookingcheck.depositpaid);
+    await roomPage.clickToConfirmUpdateBooking();
+    // await header.clickOnHeaderLink("Report");
+    // await expect(bookingPage.bookingPage).toBeVisible();
+    await page.waitForTimeout(3000);
+    // await page
+    //   .locator("//div[@class='rbc-date-cell'][string()='17']").click();
   })
 
 
