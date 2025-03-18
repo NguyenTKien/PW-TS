@@ -89,9 +89,24 @@ export const bookingcheck: BookingDates = {
   depositpaid: true,
 };
 
+export const bookingcheckupdate: BookingDates = {
+  bookingdates: {
+    checkin: "2025-03-19",
+    checkout: "2025-03-22",
+  },
+  depositpaid: false,
+};
+
 export const user: User = {
-  email: "christinaakfl@gmail.com",
+  email: "alohaap09@gmail.com",
   firstname: "Alovado",
   lastname: "Christina",
-  phone: "09968493552",
+  phone: "09573953994",
+};
+
+export const userupdate: User = {
+  email: "kimushaki@gmail.com",
+  firstname: "Haloda",
+  lastname: "Hisamu",
+  phone: "09573955576",
 };

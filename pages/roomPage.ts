@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator, expect } from "@playwright/test";
 import { BaseTest } from "./basetest";
 import { RoomAmenities, RoomType } from "../utils/data_helper";
 
@@ -25,6 +25,8 @@ export class RoomPage extends BaseTest {
   readonly checkinEdit: Locator;
   readonly checkoutEdit: Locator;
   readonly confirmBookingEditButton: Locator;
+  readonly updateBookingInfo: Locator;
+  readonly deleteBookingButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -47,13 +49,27 @@ export class RoomPage extends BaseTest {
     this.errorMessage = page.locator("//div[@class='alert alert-danger']/p");
     this.updateButton = page.locator("//button[@id='update']");
     //Room details
-    this.editBookingButton = page.locator("//span[contains(@class, 'bookingEdit')]");
-    this.confirmBookingEditButton = page.locator("//span[contains(@class, 'confirmBookingEdit')]");
+    this.editBookingButton = page.locator(
+      "//span[contains(@class, 'bookingEdit')]"
+    );
+    this.confirmBookingEditButton = page.locator(
+      "//span[contains(@class, 'confirmBookingEdit')]"
+    );
     this.firstnameEdit = page.locator("//input[@name='firstname']");
     this.lastnameEdit = page.locator("//input[@name='lastname']");
     this.depositPaidEdit = page.locator("//select[@name='depositpaid']");
-    this.checkinEdit = page.locator("//div[contains(@class, 'datepicker')]//input").first();
-    this.checkoutEdit = page.locator("//div[contains(@class, 'datepicker')]//input").last();
+    this.checkinEdit = page.locator(
+      "//div[contains(@class, 'datepicker')]//input"
+    );
+    this.checkoutEdit = page.locator(
+      "//div[contains(@class, 'datepicker')]//input"
+    );
+    this.updateBookingInfo = page.locator(
+      "//div[contains(@class, 'detail booking')]//div[@class='row']//p"
+    );
+    this.deleteBookingButton = page.locator(
+      "//span[contains(@class, 'bookingDelete')]"
+    );
   }
 
   async selectRoomType(type: RoomType | null) {
@@ -166,25 +182,65 @@ export class RoomPage extends BaseTest {
   }
 
   async clickToUpdateBooking() {
-    this.editBookingButton.click();
-    this.page.waitForEvent("load");
+    await this.editBookingButton.click();
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   async clickToConfirmUpdateBooking() {
-    this.editBookingButton.click();
-    this.page.waitForEvent("load");
+    await this.confirmBookingEditButton.click();
+    await this.page.waitForLoadState("domcontentloaded");
+    await this.page.waitForTimeout(1000);
   }
 
-  async updateBookingRoom(firstname: string, lastname: string, checkinDate: string, checkoutDate: string, depositPaid: boolean) {
-    this.firstnameEdit.clear().then(() => {
-      this.firstnameEdit.fill(firstname);
-    })
-    this.lastnameEdit.clear().then(() => {
-      this.lastnameEdit.fill(lastname);
-    })
-    this.depositPaidEdit.selectOption(depositPaid ? "true" : "false");
-    this.checkinEdit.fill(checkinDate);
-    this.checkoutEdit.fill(checkoutDate);
+  async clickToDeleteBooking() {
+    await this.deleteBookingButton.click();
+    await this.page.waitForLoadState("domcontentloaded");
+    await this.page.waitForTimeout(1000);
+  }
+
+  async verifyBookingHasDeleted() {
+    console.log(await this.updateBookingInfo.count());
+    expect((await this.updateBookingInfo.count()) == 0).toBeTruthy();
+  }
+
+  async updateBookingRoom(
+    firstname: string,
+    lastname: string,
+    checkinDate: string,
+    checkoutDate: string,
+    depositPaid: boolean
+  ) {
+    await this.firstnameEdit.fill(firstname);
+    await this.lastnameEdit.fill(lastname);
+    await this.depositPaidEdit.selectOption(depositPaid ? "true" : "false");
+    await this.checkinEdit.first().fill(checkinDate);
+    await this.checkoutEdit
+      .last()
+      .clear()
+      .then(() => {
+        this.checkoutEdit.last().fill(checkoutDate);
+      });
+  }
+
+  async verifyBookingHasUpdated(
+    firstname: string,
+    lastname: string,
+    checkinDate: string,
+    checkoutDate: string
+  ) {
+    const bookingInfo: string[] = [];
+    const elements = await this.updateBookingInfo.elementHandles();
+    for (const element of elements) {
+      const text = await element.textContent();
+      if (text) {
+        bookingInfo.push(text.trim());
+      }
+    }
+    console.log(bookingInfo);
+    await expect(bookingInfo).toContain(firstname);
+    await expect(bookingInfo).toContain(lastname);
+    await expect(bookingInfo).toContain(checkinDate);
+    await expect(bookingInfo).toContain(checkoutDate);
   }
 }
 

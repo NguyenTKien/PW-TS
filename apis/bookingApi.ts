@@ -11,28 +11,29 @@ export class BookingApi extends BaseAPI {
 
   async createBooking(
     roomId: number,
-    email: string,
-    firstname: string,
-    lastname: string,
-    phonenumber: string,
-    depositpaid: boolean,
+    emailAdress: string,
+    firstName: string,
+    lastName: string,
+    phoneNumber: string,
+    depositPaid: boolean,
     checkinDate: string,
     checkoutDate: string
   ) {
     const response = await this.request.post(bookingPath, {
       data: {
-        roomid: roomId,
         bookingdates: {
           checkin: checkinDate,
-          chechout: checkoutDate,
+          checkout: checkoutDate,
         },
-        depositpaid: depositpaid,
-        email: email,
-        firstname: firstname,
-        lastname: lastname,
-        phone: phonenumber,
+        depositpaid: depositPaid,
+        firstname: firstName,
+        lastname: lastName,
+        roomid: roomId,
+        email: emailAdress,
+        phone: phoneNumber,
       },
     });
+    console.log(response);
     await expect(response.status()).toBe(200);
   }
 
@@ -42,13 +43,13 @@ export class BookingApi extends BaseAPI {
   }
 
   async getfirstRoomID(): Promise<number> {
-    const response = await this.request.get(process.env.BASE_API_URL + '/room');
+    const response = await this.request.get(process.env.BASE_API_URL + "/room");
     await expect(response.status()).toBe(200);
     const getRoomData = JSON.parse(await response.text());
     const allRooms: Room[] = getRoomData.rooms;
     console.log(allRooms);
     if (allRooms.length > 0) {
-      console.log(allRooms[0].roomid)
+      console.log(allRooms[0].roomid);
       return allRooms[0].roomid;
     } else {
       throw new Error("No rooms available");
@@ -61,7 +62,9 @@ export class BookingApi extends BaseAPI {
     const getBookingDatas = JSON.parse(await response.text());
     const allBookings = getBookingDatas.bookings;
     console.log(allBookings);
-    const bookingList: { bookingid: number }[] = allBookings.map((booking: { bookingid: number }) => booking);
+    const bookingList: { bookingid: number }[] = allBookings.map(
+      (booking: { bookingid: number }) => booking
+    );
     for (const book of bookingList) await this.deleteBooking(book.bookingid);
   }
 }
