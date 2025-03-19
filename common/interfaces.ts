@@ -25,3 +25,12 @@ export interface Room {
     features: RoomAmenities,
     description: string
 }
+
+export interface BookingInfo {
+  firstname: string, 
+  lastname: string,
+  room: string,
+  depositpaid: boolean,
+  checkin: string,
+  checkout: string
+}

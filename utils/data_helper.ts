@@ -1,8 +1,15 @@
+import path from "path";
+import { BookingDates, BookingInfo, User } from "../common/interfaces";
 import {
-  BookingDates,
-  User,
-} from "../common/interfaces";
-import { getCurrentDate, getFutureDate, getRanDomNumber } from "./helper";
+  getCurrentDate,
+  getFutureDate,
+  getRanDomNumber,
+  readJsonData,
+} from "./helper";
+import { names } from "./data.json";
+
+const jsonFilePath = path.resolve(__dirname, "./data.json");
+const json = readJsonData(jsonFilePath);
 
 export enum RoomType {
   SINGLE = "Single",
@@ -21,32 +28,19 @@ export type RoomAmenities = {
   views: boolean;
 };
 
-export class RoomInfo {
-  constructor(
-    public roomName: string,
-    public type: RoomType,
-    public accesssible: boolean,
-    public price: number,
-    public roomAmenities: RoomAmenities
-  ) {}
-}
-
-export class BookingInfo {
-  constructor(
-    firstName: string,
-    lastName: string,
-    room: RoomInfo["roomName"],
-    depositPaid: boolean,
-    checkIn: string,
-    checkOut: string
-  ) {}
-}
+export type RoomInfo = {
+  roomName: string;
+  type: RoomType;
+  accessible: boolean;
+  price: number;
+  roomAmenities: RoomAmenities;
+};
 
 export const defaultRoomBooking: RoomInfo = {
   roomName: getRanDomNumber(100, 999).toString(),
   type: RoomType.DOUBLE,
-  accesssible: true,
-  price: 150,
+  accessible: true,
+  price: getRanDomNumber(100, 999),
   roomAmenities: {
     wifi: true,
     TV: true,
@@ -58,10 +52,10 @@ export const defaultRoomBooking: RoomInfo = {
 };
 
 export const updateRoomBooking: RoomInfo = {
-  roomName: "103",
+  roomName: getRanDomNumber(100, 999).toString(),
   type: RoomType.SUITE,
-  accesssible: true,
-  price: 200,
+  accessible: true,
+  price: getRanDomNumber(100, 999),
   roomAmenities: {
     wifi: false,
     TV: true,
@@ -73,40 +67,40 @@ export const updateRoomBooking: RoomInfo = {
 };
 
 export const defaultBooking: BookingInfo = {
-  firstName: "John",
-  lastName: "Doe",
-  room: defaultRoomBooking.roomName,
-  depositPaid: true,
-  checkIn: getCurrentDate(),
-  checkOut: getFutureDate(2),
+  firstname: names[getRanDomNumber(0, names.length)],
+  lastname: names[getRanDomNumber(0, names.length)],
+  room: getRanDomNumber(100, 999).toString() || "102",
+  depositpaid: true,
+  checkin: getCurrentDate(),
+  checkout: getFutureDate(2),
 };
 
 export const bookingcheck: BookingDates = {
   bookingdates: {
-    checkin: "2025-03-17",
-    checkout: "2025-03-20",
+    checkin: getCurrentDate(),
+    checkout: getFutureDate(3),
   },
   depositpaid: true,
 };
 
 export const bookingcheckupdate: BookingDates = {
   bookingdates: {
-    checkin: "2025-03-19",
-    checkout: "2025-03-22",
+    checkin: getFutureDate(3),
+    checkout: getFutureDate(5),
   },
   depositpaid: false,
 };
 
 export const user: User = {
-  email: "alohaap09@gmail.com",
-  firstname: "Alovado",
-  lastname: "Christina",
+  email: names[getRanDomNumber(0, names.length)] + "@gmail.com",
+  firstname: names[getRanDomNumber(0, names.length)],
+  lastname: names[getRanDomNumber(0, names.length)],
   phone: "09573953994",
 };
 
 export const userupdate: User = {
-  email: "kimushaki@gmail.com",
-  firstname: "Haloda",
-  lastname: "Hisamu",
+  email: names[getRanDomNumber(0, names.length)] + "@gmail.com",
+  firstname: names[getRanDomNumber(0, names.length)],
+  lastname: names[getRanDomNumber(0, names.length)],
   phone: "09573955576",
 };

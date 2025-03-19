@@ -45,7 +45,10 @@ export class BookingApi extends BaseAPI {
   async getfirstRoomID(): Promise<number> {
     const response = await this.request.get(process.env.BASE_API_URL + "/room");
     await expect(response.status()).toBe(200);
-    const getRoomData = JSON.parse(await response.text());
+    // const getRoomData: [TypeValueObject] = await response.json();
+    // const firstBooking = getRoomData.find((typeValueObject) => typeValueObject.type === "bookingid")?.value;
+
+    const getRoomData = await response.json();
     const allRooms: Room[] = getRoomData.rooms;
     // console.log(allRooms);
     if (allRooms.length > 0) {

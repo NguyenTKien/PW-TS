@@ -1,5 +1,5 @@
 import { Browser, Locator, Page } from "@playwright/test";
-import { BaseTest } from "./basetest";
+import { BaseTest } from "./basePage";
 
 export class AdminPage extends BaseTest {
   readonly loginTitle: Locator;

@@ -1,6 +1,4 @@
-import { Headers } from "../../pages/Components/headers";
 import { test } from "../../base/custom_fixtures";
-import { BookingPage } from "../../pages/bookingPage";
 import { LoginPage } from "../../common/login_page";
 import {
   bookingcheck,
@@ -13,10 +11,7 @@ import { BookingApi } from "../../apis/bookingApi";
 
 test.describe("Test Booking Managerment Fuctions", () => {
   let loginPage: LoginPage;
-  // let header: Headers;
-  // let bookingPage: BookingPage;
   let bookingApi: BookingApi;
-  let roomPage: RoomPage;
 
   test.beforeEach(
     "Access to booking managerment",

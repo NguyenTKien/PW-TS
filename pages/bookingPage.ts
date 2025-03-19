@@ -1,5 +1,5 @@
 import { Locator, Page } from "@playwright/test";
-import { BaseTest } from "./basetest";
+import { BaseTest } from "./basePage";
 
 export class BookingPage extends BaseTest {
     readonly bookingPage: Locator;

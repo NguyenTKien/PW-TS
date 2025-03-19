@@ -1,9 +1,9 @@
 import { Page, Locator, expect } from "@playwright/test";
-import { BaseTest } from "./basetest";
+import { BaseTest } from "./basePage";
 import { RoomAmenities, RoomType } from "../utils/data_helper";
 
 export class RoomPage extends BaseTest {
-  readonly roomIdField: Locator;
+  readonly roomNameField: Locator;
   readonly roomType: Locator;
   readonly roomAccessbile: Locator;
   readonly roomPrice: Locator;
@@ -30,7 +30,7 @@ export class RoomPage extends BaseTest {
 
   constructor(page: Page) {
     super(page);
-    this.roomIdField = page.getByTestId("roomName");
+    this.roomNameField = page.getByTestId("roomName");
     this.roomType = page.locator("#type");
     this.roomAccessbile = page.locator("#accessible");
     this.roomPrice = page.locator("#roomPrice");
@@ -73,7 +73,7 @@ export class RoomPage extends BaseTest {
   }
 
   async goToRoomPage() {
-    this.page.goto("/admin/room");
+    this.page.goto("/admin/rooms");
   }
 
   async selectRoomType(type: RoomType | null) {
@@ -102,13 +102,13 @@ export class RoomPage extends BaseTest {
   }
 
   async createRoom(
-    roomID: string,
+    roomName: string,
     type: RoomType | null,
     accesssible: boolean,
     price: number | null,
     roomDetails: RoomAmenities
   ) {
-    await this.roomIdField.fill(roomID);
+    await this.roomNameField.fill(roomName);
     await this.selectRoomType(type);
     await this.roomAccessbile.selectOption(accesssible ? "true" : "false");
     await this.inputPrice(price);
@@ -188,18 +188,19 @@ export class RoomPage extends BaseTest {
   async clickToUpdateBooking() {
     await this.editBookingButton.click();
     await this.page.waitForLoadState("domcontentloaded");
+    await this.page.waitForTimeout(500);
   }
 
   async clickToConfirmUpdateBooking() {
     await this.confirmBookingEditButton.click();
     await this.page.waitForLoadState("domcontentloaded");
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(500);
   }
 
   async clickToDeleteBooking() {
     await this.deleteBookingButton.click();
     await this.page.waitForLoadState("domcontentloaded");
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(500);
   }
 
   async verifyBookingHasDeleted() {
