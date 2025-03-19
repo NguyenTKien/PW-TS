@@ -33,7 +33,7 @@ export class BookingApi extends BaseAPI {
         phone: phoneNumber,
       },
     });
-    console.log(response);
+    // console.log(response);
     await expect(response.status()).toBe(200);
   }
 
@@ -47,9 +47,8 @@ export class BookingApi extends BaseAPI {
     await expect(response.status()).toBe(200);
     const getRoomData = JSON.parse(await response.text());
     const allRooms: Room[] = getRoomData.rooms;
-    console.log(allRooms);
+    // console.log(allRooms);
     if (allRooms.length > 0) {
-      console.log(allRooms[0].roomid);
       return allRooms[0].roomid;
     } else {
       throw new Error("No rooms available");
@@ -61,7 +60,7 @@ export class BookingApi extends BaseAPI {
     await expect(response.status()).toBe(200);
     const getBookingDatas = JSON.parse(await response.text());
     const allBookings = getBookingDatas.bookings;
-    console.log(allBookings);
+    // console.log(allBookings);
     const bookingList: { bookingid: number }[] = allBookings.map(
       (booking: { bookingid: number }) => booking
     );

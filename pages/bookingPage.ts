@@ -9,6 +9,10 @@ export class BookingPage extends BaseTest {
         this.bookingPage = page.locator("//div[@role='table'][@aria-label = 'Month View']");
     }
 
+    async goToBookingPage() {
+      this.page.goto("/admin/report");
+    }
+
     async moveToElement(page: Page, locator: Locator) {
         const box = await locator.boundingBox();
         if (box) {

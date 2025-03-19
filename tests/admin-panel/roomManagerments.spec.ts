@@ -1,36 +1,32 @@
-import { expect, test } from "@playwright/test";
-import { AdminPage } from "../../pages/adminPage";
+import { test } from "../../base/custom_fixtures";
+import { expect } from "@playwright/test";
 import { getRoomDetailsFromAmenities, RoomPage } from "../../pages/roomPage";
 import { defaultRoomBooking, updateRoomBooking } from "../../utils/data_helper";
 import { AuthenticationApi } from "../../apis/authApi";
 import { RoomApi } from "../../apis/roomApi";
 
 test.describe("Room Managerment function", () => {
-  let adminPage: AdminPage;
-  let roomManager: RoomPage;
   let authApi: AuthenticationApi;
   let roomApi: RoomApi;
 
-  test.beforeEach("Access to room managerment", async ({ page, request }) => {
-    adminPage = new AdminPage(page);
-    roomManager = new RoomPage(page);
+  test.beforeEach("Access to room managerment", async ({ request }) => {
 
     authApi = new AuthenticationApi(request);
     roomApi = new RoomApi(request);
 
-    await adminPage.openURL("/admin/");
+    // await adminPage.openURL("/admin/");
   });
   /*
      Verify the administration is able to create by fill up all mandatory fields
   */
   test(`Administration is able to create room by fill up all mandatory fields @room-managerment @sanity`, async ({
-    page,
+    roomPage,
   }) => {
     //Delete all rooms
     await roomApi.deleteAllRooms();
 
     // Create a room
-    await roomManager.createRoom(
+    await roomPage.createRoom(
       defaultRoomBooking.roomName,
       defaultRoomBooking.type,
       defaultRoomBooking.accesssible,
@@ -43,25 +39,25 @@ test.describe("Room Managerment function", () => {
     const amenitiesString = getRoomDetailsFromAmenities(
       defaultRoomBooking.roomAmenities
     );
-    const roomRecord = roomManager.getRoomRecord(defaultRoomBooking.roomName);
+    const roomRecord = roomPage.getRoomRecord(defaultRoomBooking.roomName);
 
     // Verify the room details
-    await expect(roomManager.getRoomNameLocator(roomRecord)).toContainText(
+    await expect(roomPage.getRoomNameLocator(roomRecord)).toContainText(
       defaultRoomBooking.roomName
     );
-    await expect(roomManager.getRoomTypeLocator(roomRecord)).toContainText(
+    await expect(roomPage.getRoomTypeLocator(roomRecord)).toContainText(
       defaultRoomBooking.type
     );
     await expect(
-      roomManager.getRoomAccessibleLocator(roomRecord),
+      roomPage.getRoomAccessibleLocator(roomRecord),
       `${defaultRoomBooking.roomName} has correct accessibility: ${accessibleString}`
     ).toContainText(accessibleString);
     await expect(
-      roomManager.getRoomPriceLocator(roomRecord),
+      roomPage.getRoomPriceLocator(roomRecord),
       `${defaultRoomBooking.roomName} has correct price: ${Price}`
     ).toContainText(Price);
     await expect(
-      roomManager.getRoomDetailsLocator(roomRecord),
+      roomPage.getRoomDetailsLocator(roomRecord),
       `${defaultRoomBooking.roomName} has correct details: ${amenitiesString}`
     ).toContainText(amenitiesString);
   });
@@ -71,7 +67,7 @@ test.describe("Room Managerment function", () => {
   Verify the administration is able to delete by fill up all mandatory fields 
   */
   test(`Administration is able to edit room by fill up all mandatory fields @room-managerment @sanity`, async ({
-    page,
+    page, roomPage,
   }) => {
     //Create the room by API
     await roomApi.createRoom(
@@ -83,59 +79,59 @@ test.describe("Room Managerment function", () => {
     );
     await page.reload();
     //Edit the room
-    const roomRecord = roomManager.getRoomRecord(defaultRoomBooking.roomName);
+    const roomRecord = roomPage.getRoomRecord(defaultRoomBooking.roomName);
 
-    await roomManager.getRoomNameLocator(roomRecord).click();
-    await roomManager.getEditButtonLocator().click();
-    await roomManager
+    await roomPage.getRoomNameLocator(roomRecord).click();
+    await roomPage.getEditButtonLocator().click();
+    await roomPage
       .getUpdateRoomValueLocator(defaultRoomBooking.roomName)
       .fill(updateRoomBooking.roomName);
-    await roomManager
+    await roomPage
       .getUpdateSelectLocator("type")
       .selectOption(updateRoomBooking.type);
-    await roomManager
+    await roomPage
       .getUpdateSelectLocator("accessible")
       .selectOption(updateRoomBooking.accesssible ? "true" : "false");
-    await roomManager
+    await roomPage
       .getUpdateRoomValueLocator(defaultRoomBooking.price.toString())
       .fill(updateRoomBooking.price.toString());
-    await roomManager.selectRoomAmenities(updateRoomBooking.roomAmenities);
-    await roomManager.clickToUpdateButton();
+    await roomPage.selectRoomAmenities(updateRoomBooking.roomAmenities);
+    await roomPage.clickToUpdateButton();
 
-    const updatedRoomRecord = roomManager.getRoomRecord(
+    const updatedRoomRecord = roomPage.getRoomRecord(
       updateRoomBooking.roomName
     );
     await expect(
-      roomManager.getRoomNameLocator(updatedRoomRecord)
+      roomPage.getRoomNameLocator(updatedRoomRecord)
     ).toContainText(updateRoomBooking.roomName);
     await expect(
-      roomManager.getRoomTypeLocator(updatedRoomRecord)
+      roomPage.getRoomTypeLocator(updatedRoomRecord)
     ).toContainText(updateRoomBooking.type);
     await expect(
-      roomManager.getRoomAccessibleLocator(updatedRoomRecord)
+      roomPage.getRoomAccessibleLocator(updatedRoomRecord)
     ).toContainText(updateRoomBooking.accesssible.toString());
     await expect(
-      roomManager.getRoomPriceLocator(updatedRoomRecord)
+      roomPage.getRoomPriceLocator(updatedRoomRecord)
     ).toContainText(updateRoomBooking.price.toString());
     await expect(
-      roomManager.getRoomDetailsLocator(updatedRoomRecord)
+      roomPage.getRoomDetailsLocator(updatedRoomRecord)
     ).toContainText(
       getRoomDetailsFromAmenities(updateRoomBooking.roomAmenities)
     );
     // Delete the room
     await page.waitForLoadState("networkidle");
-    await roomManager.clickToDeleteButton(updateRoomBooking.roomName);
+    await roomPage.clickToDeleteButton(updateRoomBooking.roomName);
 
     await page.waitForTimeout(3000);
-    const listBookingRecord = await roomManager.getListRoomRecordCount();
+    const listBookingRecord = await roomPage.getListRoomRecordCount();
     await expect(listBookingRecord).toEqual(0);
   });
 
   // Add a test case to verify that an administrative user cannot create a room without a room name
   test("Administration user cannot create a room without a room name @room-managerment @sanity", async ({
-    page,
+    roomPage,
   }) => {
-    await roomManager.createRoom(
+    await roomPage.createRoom(
       "", // Empty room name/
       defaultRoomBooking.type,
       defaultRoomBooking.accesssible,
@@ -144,15 +140,15 @@ test.describe("Room Managerment function", () => {
     );
 
     // Check for an error message or validation
-    const errorMessageLocator = roomManager.getErrorMessageLocator();
+    const errorMessageLocator = roomPage.getErrorMessageLocator();
     const errorMessageText = await errorMessageLocator.textContent();
     await expect(errorMessageText).toEqual("Room name must be set");
   });
 
   test("Administration user cannot create a room without setting room price @room-managerment", async ({
-    page,
+    roomPage,
   }) => {
-    await roomManager.createRoom(
+    await roomPage.createRoom(
       defaultRoomBooking.roomName,
       defaultRoomBooking.type,
       defaultRoomBooking.accesssible,
@@ -161,7 +157,7 @@ test.describe("Room Managerment function", () => {
     );
 
     // Check for an error message or validation
-    const errorMessageLocator = roomManager.getErrorMessageLocator();
+    const errorMessageLocator = roomPage.getErrorMessageLocator();
     const errorMessageText = await errorMessageLocator.textContent();
     await expect(errorMessageText).toEqual(
       "must be greater than or equal to 1"
@@ -169,9 +165,9 @@ test.describe("Room Managerment function", () => {
   });
 
   test("Administration user cannot create a room with price is 0 @room-managerment", async ({
-    page,
+    roomPage,
   }) => {
-    await roomManager.createRoom(
+    await roomPage.createRoom(
       defaultRoomBooking.roomName,
       defaultRoomBooking.type,
       defaultRoomBooking.accesssible,
@@ -189,7 +185,7 @@ test.describe("Room Managerment function", () => {
       views: false,
     });
     // Check for an error message or validation
-    const errorMessageLocator = roomManager.getErrorMessageLocator();
+    const errorMessageLocator = roomPage.getErrorMessageLocator();
     const errorMessageText = await errorMessageLocator.textContent();
     await expect(errorMessageText).toEqual(
       "must be greater than or equal to 1"

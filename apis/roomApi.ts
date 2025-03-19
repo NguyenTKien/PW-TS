@@ -35,7 +35,7 @@ export class RoomApi extends BaseAPI {
   async deleteRoom(roomId: number) {
     const response = await this.request.delete(roomPath + `/${roomId}`);
     await expect(response.status()).toBe(200);
-    console.log(JSON.parse(await response.text()));
+    // console.log(JSON.parse(await response.text()));
   }
 
   async deleteAllRooms() {
@@ -44,7 +44,6 @@ export class RoomApi extends BaseAPI {
     const getRoomData = JSON.parse(await getRoomResponse.text());
     const allRooms = getRoomData.rooms;
     const roomList: { roomid: number }[] = allRooms.map((room: { roomid: number }) => room);
-    console.log(roomList);
     for (const room of roomList) await this.deleteRoom(room.roomid);
   }
 }

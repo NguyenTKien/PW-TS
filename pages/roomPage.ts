@@ -72,6 +72,10 @@ export class RoomPage extends BaseTest {
     );
   }
 
+  async goToRoomPage() {
+    this.page.goto("/admin/room");
+  }
+
   async selectRoomType(type: RoomType | null) {
     if (type != null) await this.roomType.selectOption(type);
   }

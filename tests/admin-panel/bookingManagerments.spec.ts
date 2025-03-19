@@ -1,5 +1,5 @@
 import { Headers } from "../../pages/Components/headers";
-import { expect, test } from "@playwright/test";
+import { test } from "../../base/custom_fixtures";
 import { BookingPage } from "../../pages/bookingPage";
 import { LoginPage } from "../../common/login_page";
 import {
@@ -13,8 +13,8 @@ import { BookingApi } from "../../apis/bookingApi";
 
 test.describe("Test Booking Managerment Fuctions", () => {
   let loginPage: LoginPage;
-  let header: Headers;
-  let bookingPage: BookingPage;
+  // let header: Headers;
+  // let bookingPage: BookingPage;
   let bookingApi: BookingApi;
   let roomPage: RoomPage;
 
@@ -22,10 +22,7 @@ test.describe("Test Booking Managerment Fuctions", () => {
     "Access to booking managerment",
     async ({ page, request }) => {
       loginPage = new LoginPage(page);
-      header = new Headers(page);
-      bookingPage = new BookingPage(page);
       bookingApi = new BookingApi(request);
-      roomPage = new RoomPage(page);
       // Delete all booking in the first room
       const roomId = await bookingApi.getfirstRoomID();
       await bookingApi.deleteAllBookingsInFirstRoom(roomId.toString());
@@ -45,7 +42,7 @@ test.describe("Test Booking Managerment Fuctions", () => {
   );
 
   test("The adminitration user is able to edit the booking room @booking-managerment @sanity", async ({
-    page,
+    roomPage,
   }) => {
     console.log(process.env.BASE_API_URL + "/room");
     const roomRecord = roomPage.getRoomRecord("101");
@@ -70,7 +67,7 @@ test.describe("Test Booking Managerment Fuctions", () => {
   });
 
   test("The adminitration user is able to delete the booking room @booking-managerment @sanity ", async ({
-    page,
+    roomPage,
   }) => {
     const roomRecord = roomPage.getRoomRecord("101");
     await roomPage.getRoomNameLocator(roomRecord).click();
