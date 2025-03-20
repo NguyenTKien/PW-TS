@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:e2e": "playwright test tests/admin-panel --project=chromium --workers=1 show-report",
+    "test:sanity": "playwright test tests/admin-panel --project=chromium --workers=1 --grep=sanity show-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

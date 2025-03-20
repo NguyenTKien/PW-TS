@@ -13,7 +13,7 @@ steps:
   displayName: 'npm ci'
 - script: npx playwright install --with-deps
   displayName: 'Install Playwright browsers'
-- script: npx playwright test tests/admin-panel --project=chromium --workers=1
+- script: npm run test:e2e
   displayName: 'Run Playwright tests'
   env:
     CI: 'true'
