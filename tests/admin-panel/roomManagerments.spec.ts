@@ -1,6 +1,6 @@
 import { test } from "../../base/custom_fixtures";
 import { expect } from "@playwright/test";
-import { getRoomDetailsFromAmenities, RoomPage } from "../../pages/roomPage";
+import { getRoomDetailsFromAmenities } from "../../pages/roomPage";
 import { defaultRoomBooking, updateRoomBooking } from "../../utils/data_helper";
 import { AuthenticationApi } from "../../apis/authApi";
 import { RoomApi } from "../../apis/roomApi";

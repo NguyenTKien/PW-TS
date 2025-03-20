@@ -1,4 +1,4 @@
-import { Browser, Locator, Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BaseTest } from "./basePage";
 
 export class AdminPage extends BaseTest {

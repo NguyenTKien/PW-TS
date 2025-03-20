@@ -1,7 +1,5 @@
 import { test } from "../../base/custom_fixtures";
 import { expect } from "@playwright/test";
-import { AdminPage } from "../../pages/adminPage";
-import { Headers } from "../../pages/Components/headers";
 import { STORAGE_STATE_PATH } from "../../playwright.config";
 
 test.describe("Login", () => {

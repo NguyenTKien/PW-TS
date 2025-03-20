@@ -6,7 +6,6 @@ import {
   user,
   userupdate,
 } from "../../utils/data_helper";
-import { RoomPage } from "../../pages/roomPage";
 import { BookingApi } from "../../apis/bookingApi";
 
 test.describe("Test Booking Managerment Fuctions", () => {
