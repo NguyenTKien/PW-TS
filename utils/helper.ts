@@ -13,6 +13,12 @@ export function getCurrentDate(): string {
   return new Date().toISOString().split("T")[0];
 }
 
+export function getTheDateFromCurrectDate(days: number): number {
+  const futureDate = getFutureDate(days);
+  const date = new Date(futureDate);
+  return date.getDate();
+}
+
 export function getFutureDate(days: number): string {
   const date = new Date();
   date.setDate(date.getDate() + days);
@@ -49,4 +55,5 @@ export function getExtendImages(roomType: RoomType): string {
     return json.image.Twin
   }
   return json.image.Suite; // Add a default return value or handle other cases
+  console.log(json.imageUrl.Double)
 }

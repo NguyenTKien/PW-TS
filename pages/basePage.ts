@@ -1,6 +1,6 @@
 import { BrowserContext, Locator, Page } from "@playwright/test";
 
-export class BaseTest {
+export class BasePage {
   readonly page;
 
   constructor(page: Page) {

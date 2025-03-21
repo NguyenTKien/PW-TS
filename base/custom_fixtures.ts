@@ -3,12 +3,14 @@ import { AdminPage } from "../pages/adminPage";
 import { BookingPage } from "../pages/bookingPage";
 import { RoomPage } from "../pages/roomPage";
 import { Headers } from '../pages/Components/headers';
+import { FrontPage } from '../pages/frontPage';
 
 type MyFixtures = {
     adminPage: AdminPage;
     roomPage: RoomPage;
     bookingPage: BookingPage;
     headerPage: Headers;
+    frontPage: FrontPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -33,5 +35,11 @@ export const test = base.extend<MyFixtures>({
     headerPage: async({ page }, use) => {
         const headerPage = new Headers(page);
         await use(headerPage);
-    } 
+    }, 
+
+    frontPage: async({page}, use) => {
+        const frontPage = new FrontPage(page);
+        await frontPage.waitForFrontPage();
+        await use(frontPage);
+    }
 })

@@ -1,8 +1,8 @@
 import { Page, Locator, expect } from "@playwright/test";
-import { BaseTest } from "./basePage";
+import { BasePage } from "./basePage";
 import { RoomAmenities, RoomType } from "../utils/data_helper";
 
-export class RoomPage extends BaseTest {
+export class RoomPage extends BasePage {
   readonly roomNameField: Locator;
   readonly roomType: Locator;
   readonly roomAccessbile: Locator;
