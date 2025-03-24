@@ -28,4 +28,16 @@ export class BasePage {
     const newPage = await pagePromise;
     return newPage;
   }
+
+  async getListMessage(locator: Locator): Promise<string[]> {
+    const listText: string[] = [];
+    const elements = await locator.elementHandles();
+    for (const element of elements) {
+      const text = await element.textContent();
+      if (text) {
+        listText.push(text);
+      }
+    }
+    return listText;
+  };
 }

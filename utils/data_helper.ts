@@ -1,5 +1,5 @@
 import path from "path";
-import { BookingDates, BookingInfo, User } from "../common/interfaces";
+import { BookingDates, BookingInfo, MessageRequest, User } from "../common/interfaces";
 import {
   getCurrentDate,
   getFutureDate,
@@ -27,6 +27,11 @@ export type RoomAmenities = {
   safe: boolean;
   views: boolean;
 };
+
+export const BookingSucces = {
+  BookingTitle: "Booking Successful!",
+  BookingContent: "Congratulations! Your booking has been confirmed for:"
+}
 
 export type RoomInfo = {
   roomName: string;
@@ -80,7 +85,7 @@ export const bookingcheck: BookingDates = {
     checkin: getCurrentDate(),
     checkout: getFutureDate(3),
   },
-  depositpaid: true,
+  depositpaid: true
 };
 
 export const bookingcheckupdate: BookingDates = {

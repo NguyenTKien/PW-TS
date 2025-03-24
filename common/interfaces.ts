@@ -15,6 +15,11 @@ export interface User {
   phone: string;
 }
 
+export interface MessageRequest {
+  subject: string;
+  content: string;
+}
+
 export interface Room {
     roomid: number,
     roomname: string,

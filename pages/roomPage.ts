@@ -200,7 +200,7 @@ export class RoomPage extends BasePage {
   async clickToDeleteBooking() {
     await this.deleteBookingButton.click();
     await this.page.waitForLoadState("domcontentloaded");
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(2000);
   }
 
   async verifyBookingHasDeleted() {
@@ -233,19 +233,12 @@ export class RoomPage extends BasePage {
     checkinDate: string,
     checkoutDate: string
   ) {
-    const bookingInfo: string[] = [];
-    const elements = await this.updateBookingInfo.elementHandles();
-    for (const element of elements) {
-      const text = await element.textContent();
-      if (text) {
-        bookingInfo.push(text.trim());
-      }
-    }
+    const bookingInfo = await this.getListMessage(this.updateBookingInfo);
     console.log(bookingInfo);
-    await expect(bookingInfo).toContain(firstname);
-    await expect(bookingInfo).toContain(lastname);
-    await expect(bookingInfo).toContain(checkinDate);
-    await expect(bookingInfo).toContain(checkoutDate);
+    expect(bookingInfo).toContain(firstname);
+    expect(bookingInfo).toContain(lastname);
+    expect(bookingInfo).toContain(checkinDate);
+    expect(bookingInfo).toContain(checkoutDate);
   }
 }
 

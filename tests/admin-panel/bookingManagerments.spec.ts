@@ -3,23 +3,33 @@ import { LoginPage } from "../../common/login_page";
 import {
   bookingcheck,
   bookingcheckupdate,
+  defaultRoomBooking,
   user,
   userupdate,
 } from "../../utils/data_helper";
 import { BookingApi } from "../../apis/bookingApi";
+import { RoomApi } from "../../apis/roomApi";
 
 test.describe("Test Booking Managerment Fuctions", () => {
   let loginPage: LoginPage;
   let bookingApi: BookingApi;
+  let roomApi: RoomApi;
 
   test.beforeEach(
     "Access to booking managerment",
-    async ({ page, request }) => {
+    async ({ page, request, roomPage }) => {
       loginPage = new LoginPage(page);
       bookingApi = new BookingApi(request);
-      // Delete all booking in the first room
+      roomApi = new RoomApi(request);
+      //Create a room
+      await roomApi.createRoom(defaultRoomBooking.roomName,
+            defaultRoomBooking.type,
+            defaultRoomBooking.accessible,
+            defaultRoomBooking.price,
+            defaultRoomBooking.roomAmenities);
+      // Get the roomId
       const roomId = await bookingApi.getfirstRoomID();
-      await bookingApi.deleteAllBookingsInFirstRoom(roomId.toString());
+      // await bookingApi.deleteAllBookingsInFirstRoom(roomId.toString());
       // Create a booking in the first room
       await bookingApi.createBooking(
         roomId,
@@ -32,6 +42,9 @@ test.describe("Test Booking Managerment Fuctions", () => {
         bookingcheck.bookingdates.checkout
       );
       await loginPage.openURL("/admin");
+
+      const roomRecord = roomPage.getRoomRecord(defaultRoomBooking.roomName);
+      await roomPage.getRoomNameLocator(roomRecord).click();
     }
   );
 
@@ -39,8 +52,8 @@ test.describe("Test Booking Managerment Fuctions", () => {
     roomPage,
   }) => {
     console.log(process.env.BASE_API_URL + "/room");
-    const roomRecord = roomPage.getRoomRecord("101");
-    await roomPage.getRoomNameLocator(roomRecord).click();
+    // const roomRecord = roomPage.getRoomRecord("101");
+    // await roomPage.getRoomNameLocator(roomRecord).click();
 
     await roomPage.clickToUpdateBooking();
     await roomPage.updateBookingRoom(
@@ -63,9 +76,6 @@ test.describe("Test Booking Managerment Fuctions", () => {
   test("The adminitration user is able to delete the booking room @booking-managerment @sanity ", async ({
     roomPage,
   }) => {
-    const roomRecord = roomPage.getRoomRecord("101");
-    await roomPage.getRoomNameLocator(roomRecord).click();
-
     await roomPage.clickToDeleteBooking();
     await roomPage.verifyBookingHasDeleted();
   });
