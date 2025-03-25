@@ -4,6 +4,7 @@ import { BookingPage } from "../pages/bookingPage";
 import { RoomPage } from "../pages/roomPage";
 import { Headers } from '../pages/Components/headers';
 import { FrontPage } from '../pages/frontPage';
+import { MessagePage } from '../pages/messagePage';
 
 type MyFixtures = {
     adminPage: AdminPage;
@@ -11,6 +12,7 @@ type MyFixtures = {
     bookingPage: BookingPage;
     headerPage: Headers;
     frontPage: FrontPage;
+    messagePage: MessagePage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -41,5 +43,11 @@ export const test = base.extend<MyFixtures>({
         const frontPage = new FrontPage(page);
         await frontPage.waitForFrontPage();
         await use(frontPage);
+    },
+
+    messagePage: async({page}, use) => {
+        const messagePage = new MessagePage(page);
+        // await messagePage.waitForMessagePage();
+        await use(messagePage);
     }
 })

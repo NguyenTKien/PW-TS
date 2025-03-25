@@ -12,19 +12,22 @@ import {
   readJsonData,
 } from "../../utils/helper";
 import path from "path";
+import { MessageApi } from "../../apis/messageApi";
 
 const jsonFilePath = path.resolve(__dirname, "../../utils/data.json");
 const data = readJsonData(jsonFilePath);
+let messageApi: MessageApi;
+let roomApi: RoomApi;
 
 test.describe("Front Page booking function", async () => {
-  let bookingApi: BookingApi;
-  let roomApi: RoomApi;
+  // let messageApi: MessageApi;
+  // let roomApi: RoomApi;
   const checkout = getTheDateFromCurrectDate(-1);
   const checkoutDate = getFutureDate(0);
 
   test.beforeEach("Setup room", async ({ request }) => {
     roomApi = new RoomApi(request);
-    bookingApi = new BookingApi(request);
+    messageApi = new MessageApi(request);
 
     roomApi.createRoom(
       defaultRoomBooking.roomName,
@@ -35,7 +38,13 @@ test.describe("Front Page booking function", async () => {
     );
   });
 
-  test("Booking Room function @front-page @sanity", async ({ frontPage }) => {
+  test("Booking Room function @front-page @sanity", async ({
+    frontPage,
+    messagePage,
+    headerPage,
+  }) => {
+    await messageApi.deleteAllMessage();
+
     console.log(checkoutDate);
     await frontPage.makeARoomBooking(
       user.firstname,
@@ -49,6 +58,12 @@ test.describe("Front Page booking function", async () => {
       BookingSucces.BookingContent,
       checkoutDate
     );
+
+    await messagePage.verifyMessageDisplayCorrectly(
+      user.firstname,
+      "You have a new booking!"
+    );
+    await headerPage.verifyNotificationMessageDislayed();
   });
 
   /* Test cases:
@@ -162,7 +177,8 @@ test.describe("Front Page booking function", async () => {
   });
 });
 
-/* Test cases:
+test.describe("Contact with administrative", async () => {
+  /* Test cases:
     - Error message when requesting message with leaving the name blank
     - Error message when requesting message with leaving the email name blank
     - Error message when requesting message with leaving the phone name blank
@@ -173,7 +189,6 @@ test.describe("Front Page booking function", async () => {
     - Error message when requesting message with invalid subject field
     - Error message when requesting message with invalid message field
    */
-test.describe("Contact with administrative", async () => {
   test("Error message when inputting invalid message information @front-page", async ({
     frontPage,
   }) => {
@@ -266,7 +281,15 @@ test.describe("Contact with administrative", async () => {
     );
   });
 
-  test("Sending request message successfully @front-page @sanity", async ({ frontPage }) => {
+  test("Sending request message successfully @front-page @sanity", async ({
+    request,
+    frontPage,
+    headerPage,
+    messagePage,
+  }) => {
+    messageApi = new MessageApi(request);
+    await messageApi.deleteAllMessage();
+
     await frontPage.makeARequestMessage(
       user.firstname,
       user.email,
@@ -279,5 +302,10 @@ test.describe("Contact with administrative", async () => {
       user.firstname,
       data.message.title.validinput
     );
+    await messagePage.verifyMessageDisplayCorrectly(
+      user.firstname,
+      data.message.title.validinput
+    );
+    await headerPage.verifyNotificationMessageDislayed();
   });
 });
