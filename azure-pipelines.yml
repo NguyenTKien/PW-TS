@@ -1,35 +1,53 @@
 trigger:
-- main
+  - main
 
 pool: Default
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18'
-  displayName: 'Install Node.js'
+variables:
+  - group: UserAccount
+  - group: ConfigFile
 
-- script: npm ci
-  displayName: 'npm ci'
-- script: npx playwright install --with-deps
-  displayName: 'Install Playwright browsers'
-- script: npm run test:e2e
-  displayName: 'Run Playwright tests'
-  env:
-    CI: 'true'
-- task: PublishTestResults@2
-  displayName: 'Publish test results'
-  inputs:
-    searchFolder: 'test-results'
-    testResultsFormat: 'JUnit'
-    testResultsFiles: 'junit-results.xml'
-    mergeTestResults: true
-    failTaskOnFailedTests: true
-    testRunTitle: 'End-To-End Booking Room Project'
-  condition: succeededOrFailed()
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: playwright-report
-    artifact: playwright-report
-    publishLocation: 'pipeline'
-  condition: succeededOrFailed()
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "18"
+    displayName: "Install Node.js"
+
+  - script: npm ci
+    displayName: "npm ci"
+  - script: npx playwright install --with-deps
+    displayName: "Install Playwright browsers"
+
+  - script: |
+      echo "User: $(EMAIL)"
+      echo "Password: $(PASSWORD)"
+      echo "API_URL: ${api_url}"
+      echo "storage_state_admin: ${STORAGE_STATE_ADMIN_FILE}"
+    displayName: "Display variables"
+    env:
+      CI: "true"
+      EMAIL: $(EMAIL) # Set email as an environment variable
+      PASSWORD: $(PASSWORD) # Set password as an environment variable (Azure DevOps will mask it)
+      BASE_API_URL: ${api_url}
+      STORAGE_STATE_ADMIN_FILE: ${STORAGE_STATE_ADMIN_FILE}
+      STORAGE_STATE_FILE: ${STORAGE_STATE_FILE}
+
+  - script: npm run test:e2e
+    displayName: "Run Playwright tests"
+
+  - task: PublishTestResults@2
+    displayName: "Publish test results"
+    inputs:
+      searchFolder: "test-results"
+      testResultsFormat: "JUnit"
+      testResultsFiles: "junit-results.xml"
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+      testRunTitle: "End-To-End Booking Room Project"
+    condition: succeededOrFailed()
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: playwright-report
+      artifact: playwright-report
+      publishLocation: "pipeline"
+    condition: succeededOrFailed()
