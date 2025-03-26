@@ -4,8 +4,7 @@ trigger:
 pool: Default
 
 variables:
-  - group: UserAccount
-  - API_URL: https://automationintesting.online/api
+  - group: FileConfig
 
 steps:
   - task: NodeTool@0
@@ -21,16 +20,11 @@ steps:
   - script: |
       echo "User: $(EMAIL)"
       echo "Password: $(PASSWORD)"
-      echo "api_url: ${API_URL}"
-      echo "storage_state_admin: ${storage_state_admin}"
     displayName: "Display variables"
     env:
       CI: "true"
       EMAIL: $(EMAIL) # Set email as an environment variable
       PASSWORD: $(PASSWORD) # Set password as an environment variable (Azure DevOps will mask it)
-      BASE_API_URL: ${API_URL}
-      STORAGE_STATE_ADMIN_FILE: ${storage_state_admin}
-      STORAGE_STATE_FILE: ${storage_state}
 
   - script: npm run test:e2e
     displayName: "Run Playwright tests"
