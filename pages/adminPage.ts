@@ -1,7 +1,7 @@
-import { Browser, Locator, Page } from "@playwright/test";
-import { BaseTest } from "./basePage";
+import { Locator, Page } from "@playwright/test";
+import { BasePage } from "./basePage";
 
-export class AdminPage extends BaseTest {
+export class AdminPage extends BasePage {
   readonly loginTitle: Locator;
   readonly usernameField: Locator;
   readonly passwordField: Locator;

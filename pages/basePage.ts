@@ -1,6 +1,6 @@
 import { BrowserContext, Locator, Page } from "@playwright/test";
 
-export class BaseTest {
+export class BasePage {
   readonly page;
 
   constructor(page: Page) {
@@ -27,5 +27,17 @@ export class BaseTest {
     await element.click();
     const newPage = await pagePromise;
     return newPage;
-  }
+  };
+
+  async getListMessage(locator: Locator): Promise<string[]> {
+    const listText: string[] = [];
+    const elements = await locator.elementHandles();
+    for (const element of elements) {
+      const text = await element.textContent();
+      if (text) {
+        listText.push(text);
+      }
+    }
+    return listText;
+  };
 }

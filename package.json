@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:e2e": "playwright test tests/admin-panel --project=chromium --worker=1",
-    "test:sanity": "playwright test tests/admin-panel --project=chromium --worker=1"
+    "test:e2e": "playwright test tests --project=chromium --worker=1",
+    "test:sanity": "playwright test tests --project=chromium --worker=1 --grep=@sanity"
   },
   "keywords": [],
   "author": "",

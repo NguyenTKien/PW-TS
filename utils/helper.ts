@@ -13,10 +13,21 @@ export function getCurrentDate(): string {
   return new Date().toISOString().split("T")[0];
 }
 
+export function getTheDateFromCurrectDate(days: number): number {
+  const futureDate = getFutureDate(days);
+  const date = new Date(futureDate);
+  return date.getDate();
+}
+
 export function getFutureDate(days: number): string {
   const date = new Date();
   date.setDate(date.getDate() + days);
   return date.toISOString().split("T")[0];
+}
+
+export function getFirstDateOfMonth(): string { 
+  const date = new Date();
+  return date.getFullYear.toString + "-" + date.getMonth.toString + "-" + "01";
 }
 
 export function saveJsonData(file_path: string, json: string) {
@@ -35,6 +46,7 @@ export function readJsonData(file_path: string) {
     return jsonData
   } catch (err) {
     console.error("Fail to read json file. Error: " + err)
+    return null; // Return null if there's an error
   }
 }
 

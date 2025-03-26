@@ -28,6 +28,11 @@ export type RoomAmenities = {
   views: boolean;
 };
 
+export const BookingSucces = {
+  BookingTitle: "Booking Successful!",
+  BookingContent: "Congratulations! Your booking has been confirmed for:"
+}
+
 export type RoomInfo = {
   roomName: string;
   type: RoomType;
@@ -80,7 +85,7 @@ export const bookingcheck: BookingDates = {
     checkin: getCurrentDate(),
     checkout: getFutureDate(3),
   },
-  depositpaid: true,
+  depositpaid: true
 };
 
 export const bookingcheckupdate: BookingDates = {

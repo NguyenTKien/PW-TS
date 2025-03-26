@@ -1,14 +1,39 @@
 {
     "imageUrl": {
-        "SingleRoom": "https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg",
-        "DoubleRoom": "https://images.pexels.com/photos/14021932/pexels-photo-14021932.jpeg",
-        "SuiteRoom": "https://images.pexels.com/photos/6585757/pexels-photo-6585757.jpeg",
-        "FamilyRoom": "https://images.pexels.com/photos/237371/pexels-photo-237371.jpeg",
+        "Single": "https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg",
+        "Double": "https://images.pexels.com/photos/14021932/pexels-photo-14021932.jpeg",
+        "Suite": "https://images.pexels.com/photos/6585757/pexels-photo-6585757.jpeg",
+        "Family": "https://images.pexels.com/photos/237371/pexels-photo-237371.jpeg",
         "Twin": "https://images.pexels.com/photos/11857305/pexels-photo-11857305.jpeg"
     },
     "errorMessage": {
         "errorValidInput": "must be greater than or equal to 1",
-        "errorRoomInput": "Room name must be set"
+        "errorRoomInput": "Room name must be set",
+        "errorNoInput": "must not be null",
+        "phoneEmpty": "must not be empty",
+        "leaveFirstnameBlank": "Firstname should not be blank",
+        "leavelastnameBlank": "Lastname should not be blank",
+        "invalidEmailFormat": "must be a well-formed email address",
+        "between3and18characters": "size must be between 3 and 18",
+        "between11and21characters": "size must be between 11 and 21",
+        "leaveSubjectBlank": "Subject may not be blank",
+        "leaveMessageBlank": "Message may not be blank",
+        "leaveNameBlank": "Name may not be blank",
+        "leaveEmailBlank": "Email may not be blank",
+        "leavePhoneBlank": "Phone may not be blank",
+        "between5and100characters": "Subject must be between 5 and 100 characters.",
+        "between20and2000characters": "Message must be between 20 and 2000 characters."
+    },
+    "message": {
+        "title": {
+            "lessthan5characters": "abcd",
+            "validinput": "Request for Booking on Vacation time"
+        },
+        "content": {
+            "lessthan20characters": "abcd abcd",
+            "validinput": "Hello there, AI is transforming the future of software testing. Are you ready? At Breakpoint 2025, we are bringing together the brightest minds in AI, testing, and automation to explore how cutting-edge technologies are reshaping testing. Join 20,000+ developers, testers, and tech leaders for two days of groundbreaking insights, real-world use cases, and networking."
+        },
+        "requestSuccessTitle": "Thanks for getting in touch "
     },
     "names": [
         "Alex",
