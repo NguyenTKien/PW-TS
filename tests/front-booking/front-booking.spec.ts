@@ -281,7 +281,7 @@ test.describe("Contact with administrative", async () => {
     );
   });
 
-  test.only("Sending request message successfully @front-page @sanity", async ({
+  test("Sending request message successfully @front-page @sanity", async ({
     request,
     frontPage,
     headerPage,
