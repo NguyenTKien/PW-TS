@@ -6,43 +6,48 @@ pool: Default
 variables:
   - group: FileConfig
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "18"
-    displayName: "Install Node.js"
+jobs:
+  - job: BuildAndTest
+    timeoutInMinutes: 10 # Set the timeout to 60 minutes
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "18"
+        displayName: "Install Node.js"
 
-  - script: npm ci
-    displayName: "npm ci"
-  - script: npx playwright install --with-deps
-    displayName: "Install Playwright browsers"
+      - script: npm ci
+        displayName: "npm ci"
 
-  - script: |
-      echo "User: $(EMAIL)"
-      echo "Password: $(PASSWORD)"
-      echo "Apibase: ${BASEAPI}"
-    displayName: "Display variables"
-    env:
-      CI: "true"
-      EMAIL: $(EMAIL) # Set email as an environment variable
-      PASSWORD: $(PASSWORD) # Set password as an environment variable (Azure DevOps will mask it)
+      - script: npx playwright install --with-deps
+        displayName: "Install Playwright browsers"
 
-  - script: npm run test:e2e
-    displayName: "Run Playwright tests"
+      - script: |
+          echo "User: $(EMAIL)"
+          echo "Password: $(PASSWORD)"
+          echo "Apibase: ${BASEAPI}"
+        displayName: "Display variables"
+        env:
+          CI: "true"
+          EMAIL: $(EMAIL) # Set email as an environment variable
+          PASSWORD: $(PASSWORD) # Set password as an environment variable (Azure DevOps will mask it)
 
-  - task: PublishTestResults@2
-    displayName: "Publish test results"
-    inputs:
-      searchFolder: "test-results"
-      testResultsFormat: "JUnit"
-      testResultsFiles: "junit-results.xml"
-      mergeTestResults: true
-      failTaskOnFailedTests: true
-      testRunTitle: "End-To-End Booking Room Project"
-    condition: succeededOrFailed()
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: playwright-report
-      artifact: playwright-report
-      publishLocation: "pipeline"
-    condition: succeededOrFailed()
+      - script: npm run test:e2e
+        displayName: "Run Playwright tests"
+
+      - task: PublishTestResults@2
+        displayName: "Publish test results"
+        inputs:
+          searchFolder: "test-results"
+          testResultsFormat: "JUnit"
+          testResultsFiles: "junit-results.xml"
+          mergeTestResults: true
+          failTaskOnFailedTests: true
+          testRunTitle: "End-To-End Booking Room Project"
+        condition: succeededOrFailed()
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: playwright-report
+          artifact: playwright-report
+          publishLocation: "pipeline"
+        condition: succeededOrFailed()
