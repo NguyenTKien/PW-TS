@@ -20,6 +20,7 @@ steps:
   - script: |
       echo "User: $(EMAIL)"
       echo "Password: $(PASSWORD)"
+      echo "API_URL: ${base_api}"
     displayName: "Display variables"
     env:
       CI: "true"
