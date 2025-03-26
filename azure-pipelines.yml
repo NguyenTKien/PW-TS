@@ -3,6 +3,9 @@ trigger:
 
 pool: Default
 
+variables:
+- group: UserAccount
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -13,10 +16,18 @@ steps:
   displayName: 'npm ci'
 - script: npx playwright install --with-deps
   displayName: 'Install Playwright browsers'
-- script: npm run test:e2e
-  displayName: 'Run Playwright tests'
+
+- script: |
+    echo "User: $(EMAIL)"
+    echo "Password: $(PASSWORD)"
+    displayName: 'Display User and Password'
   env:
     CI: 'true'
+    USER: $(EMAIL)          # Set user as an environment variable
+    PASSWORD: $(PASSWORD)  # Set password as an environment variable (Azure DevOps will mask it)
+- script: npm run test:e2e
+  displayName: 'Run Playwright tests'
+
 - task: PublishTestResults@2
   displayName: 'Publish test results'
   inputs:
