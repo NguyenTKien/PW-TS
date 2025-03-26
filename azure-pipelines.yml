@@ -5,6 +5,7 @@ pool: Default
 
 variables:
 - group: UserAccount
+- group: ConfigFile
 
 steps:
 - task: NodeTool@0
