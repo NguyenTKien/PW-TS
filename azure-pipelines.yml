@@ -20,11 +20,17 @@ steps:
 - script: |
     echo "User: $(EMAIL)"
     echo "Password: $(PASSWORD)"
-  displayName: 'Display User and Password'
+    echo "API_URL: ${api_url}"
+    echo "storage_state_admin: ${STORAGE_STATE_ADMIN_FILE}"
+  displayName: 'Display variables'
   env:
     CI: 'true'
-    EMAIL: $(EMAIL)          # Set email as an environment variable
-    PASSWORD: $(PASSWORD)  # Set password as an environment variable (Azure DevOps will mask it)
+    EMAIL: $(EMAIL)         # Set email as an environment variable
+    PASSWORD: $(PASSWORD)   # Set password as an environment variable (Azure DevOps will mask it)
+    BASE_API_URL: ${api_url}
+    STORAGE_STATE_ADMIN_FILE: ${STORAGE_STATE_ADMIN_FILE}
+    STORAGE_STATE_FILE: ${STORAGE_STATE_FILE}
+
 - script: npm run test:e2e
   displayName: 'Run Playwright tests'
 
