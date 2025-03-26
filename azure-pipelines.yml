@@ -17,13 +17,13 @@ steps:
 - script: npx playwright install --with-deps
   displayName: 'Install Playwright browsers'
 
-- script: 
+- script: |
     echo "User: $(EMAIL)"
     echo "Password: $(PASSWORD)"
   displayName: 'Display User and Password'
   env:
     CI: 'true'
-    USER: $(EMAIL)          # Set user as an environment variable
+    EMAIL: $(EMAIL)          # Set email as an environment variable
     PASSWORD: $(PASSWORD)  # Set password as an environment variable (Azure DevOps will mask it)
 - script: npm run test:e2e
   displayName: 'Run Playwright tests'
