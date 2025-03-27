@@ -1,6 +1,6 @@
 import { APIRequestContext, expect } from "@playwright/test";
 import { BaseAPI } from "./baseApi";
-import { Room } from "../common/interfaces";
+import { Room } from "../../common/interfaces";
 
 const bookingPath = process.env.BASE_API_URL + "/booking";
 

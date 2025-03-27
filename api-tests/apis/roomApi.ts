@@ -1,8 +1,8 @@
 import { APIRequestContext, expect } from "@playwright/test";
 import { BaseAPI } from "./baseApi";
-import { RoomAmenities, RoomType } from "../utils/data_helper";
-import { getExtendImages } from "../utils/helper";
-import { getAmenitiesAsList } from "../pages/roomPage";
+import { RoomAmenities, RoomType } from "../../utils/data_helper";
+import { getExtendImages } from "../../utils/helper";
+import { getAmenitiesAsList } from "../../pages/roomPage";
 
 const roomPath = process.env.BASE_API_URL + "/room";
 export class RoomApi extends BaseAPI {

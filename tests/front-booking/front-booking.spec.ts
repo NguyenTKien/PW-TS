@@ -1,6 +1,6 @@
 import { test } from "../../base/custom_fixtures";
-import { BookingApi } from "../../apis/bookingApi";
-import { RoomApi } from "../../apis/roomApi";
+import { BookingApi } from "../../api-tests/apis/bookingApi";
+import { RoomApi } from "../../api-tests/apis/roomApi";
 import {
   BookingSucces,
   defaultRoomBooking,
@@ -12,7 +12,7 @@ import {
   readJsonData,
 } from "../../utils/helper";
 import path from "path";
-import { MessageApi } from "../../apis/messageApi";
+import { MessageApi } from "../../api-tests/apis/messageApi";
 
 const jsonFilePath = path.resolve(__dirname, "../../utils/data.json");
 const data = readJsonData(jsonFilePath);

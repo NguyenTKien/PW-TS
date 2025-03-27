@@ -1,0 +1,40 @@
+{
+    "type": "object",
+    "properties": {
+      "roomName": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "accessible": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "image": {
+        "type": "string"
+      },
+      "roomPrice": {
+        "type": "string"
+      },
+      "features": {
+        "type": "array",
+        "items": [
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "required": [
+      "roomName",
+      "type",
+      "accessible",
+      "description",
+      "image",
+      "roomPrice",
+      "features"
+    ]
+  }

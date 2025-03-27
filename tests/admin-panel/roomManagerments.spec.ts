@@ -2,8 +2,8 @@ import { test } from "../../base/custom_fixtures";
 import { expect } from "@playwright/test";
 import { getRoomDetailsFromAmenities } from "../../pages/roomPage";
 import { defaultRoomBooking, updateRoomBooking } from "../../utils/data_helper";
-import { AuthenticationApi } from "../../apis/authApi";
-import { RoomApi } from "../../apis/roomApi";
+import { AuthenticationApi } from "../../api-tests/apis/authApi";
+import { RoomApi } from "../../api-tests/apis/roomApi";
 import { readJsonData } from "../../utils/helper";
 import path from "path";
 

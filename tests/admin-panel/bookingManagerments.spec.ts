@@ -7,8 +7,8 @@ import {
   user,
   userupdate,
 } from "../../utils/data_helper";
-import { BookingApi } from "../../apis/bookingApi";
-import { RoomApi } from "../../apis/roomApi";
+import { BookingApi } from "../../api-tests/apis/bookingApi";
+import { RoomApi } from "../../api-tests/apis/roomApi";
 
 test.describe("Test Booking Managerment Fuctions", () => {
   let loginPage: LoginPage;

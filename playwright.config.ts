@@ -14,7 +14,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 export const STORAGE_STATE_PATH = ".auth/"
 
 export default defineConfig({
-  testDir: "./tests",
+  testDir: "./",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -50,6 +50,14 @@ export default defineConfig({
     // Setup project
     {
       name: 'setup', testMatch: /.*\.setup\.ts/, fullyParallel: true
+    },
+    
+    {
+      name: 'api',
+      use: {
+        storageState:STORAGE_STATE_PATH + process.env.STORAGE_STATE_FILE
+      },
+      // dependencies: ['setup']
     },
 
     {
