@@ -1,4 +1,4 @@
-import { APIRequestContext, expect } from "@playwright/test";
+import { APIRequestContext, APIResponse, expect } from "@playwright/test";
 import { BaseAPI } from "./baseApi";
 
 const auth = '/auth/login';
@@ -17,5 +17,24 @@ export class AuthenticationApi extends BaseAPI {
         });
 
         expect(response.status()).toBe(200);
+    }
+    
+    async getResponseAuthPost(username: string, password: string | null): Promise<APIResponse> {
+        const response = await this.postRequest(auth, {
+            data: {
+                username: username,
+                password: password || null
+            }
+        })
+        return response;
+    }
+
+    async getResponseValidatePost(token: string): Promise<APIResponse> {
+        const response = await this.postRequest("/auth/validate/", {
+            data: {
+                token: token
+            }
+        })
+        return response;
     }
 }

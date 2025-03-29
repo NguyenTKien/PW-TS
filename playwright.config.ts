@@ -49,15 +49,16 @@ export default defineConfig({
   projects: [
     // Setup project
     {
-      name: 'setup', testMatch: /.*\.setup\.ts/, fullyParallel: true
+      name: 'setup', testMatch: /\.setup\.ts/, fullyParallel: true
     },
-    
+
     {
       name: 'api',
       use: {
-        storageState:STORAGE_STATE_PATH + process.env.STORAGE_STATE_FILE
+        storageState:STORAGE_STATE_PATH + process.env.STORAGE_STATE_FILE,
+        ignoreHTTPSErrors: true
       },
-      // dependencies: ['setup']
+      dependencies: ['setup']
     },
 
     {

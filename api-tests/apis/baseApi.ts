@@ -1,4 +1,4 @@
-import { APIRequest, APIRequestContext, APIResponse } from "@playwright/test"
+import { APIRequestContext, APIResponse } from "@playwright/test"
 import { ReadStream } from "fs"
 
 export class BaseAPI {

@@ -4,13 +4,15 @@ import { LoginPage } from "../common/login_page";
 require("dotenv").config();
 
 // const authFile = path.join(__dirname, STORAGE_STATE_PATH + process.env.STORAGE_STATE_FILE);
+const username = process.env.EMAIL ?? "";
+const password = process.env.PASSWORD ?? "";
 
 setup("Create Login Authentication", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto("/admin")
-  console.log(process.env.EMAIL, process.env.PASSWORD);
-  if (process.env.EMAIL && process.env.PASSWORD) {
-    await loginPage.signIn(process.env.EMAIL.toLowerCase(), process.env.PASSWORD);
+  console.log(username, password);
+  if (username && password) {
+    await loginPage.signIn(username, password);
   } else {
     throw new Error("EMAIL or PASSWORD environment variables are not set");
   }
