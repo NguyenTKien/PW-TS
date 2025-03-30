@@ -4,7 +4,7 @@ import { RoomAmenities, RoomType } from "../../utils/data_helper";
 import { getExtendImages } from "../../utils/helper";
 import { getAmenitiesAsList } from "../../pages/roomPage";
 
-const roomPath = process.env.BASE_API_URL + "/room";
+export const roomPath = process.env.BASE_API_URL + "/room";
 export class RoomApi extends BaseAPI {
   constructor(request: APIRequestContext) {
     super(request);
@@ -48,12 +48,9 @@ export class RoomApi extends BaseAPI {
   }
 
   async getResponseRoom(): Promise<APIResponse> {
-    const response =  await this.request.get(roomPath);
-    expect (response.status()).toBe(200);
+    const response = await this.request.get(roomPath);
+    expect(response.status()).toBe(200);
     return response;
   }
 
-  // async verifyRoomIsCorrectInfo() {
-  //   expect 
-  // }
 }
