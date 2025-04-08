@@ -1,36 +1,58 @@
 trigger:
-- main
+  - main
 
-pool:
-  vmImage: ubuntu-latest
+pool: Default
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18'
-  displayName: 'Install Node.js'
+variables:
+  - group: FileConfig
 
-- script: npm ci
-  displayName: 'npm ci'
-- script: npx playwright install --with-deps
-  displayName: 'Install Playwright browsers'
-- script: npm run test:e2e
-  displayName: 'Run Playwright tests'
-  env:
-    CI: 'true'
-- task: PublishTestResults@2
-  displayName: 'Publish test results'
-  inputs:
-    searchFolder: 'test-results'
-    testResultsFormat: 'JUnit'
-    testResultsFiles: 'junit-results.xml'
-    mergeTestResults: true
-    failTaskOnFailedTests: true
-    testRunTitle: 'End-To-End Booking Room Project'
-  condition: succeededOrFailed()
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: playwright-report
-    artifact: playwright-report
-    publishLocation: 'pipeline'
-  condition: succeededOrFailed()
+jobs:
+  - job: BuildAndTest
+    timeoutInMinutes: 10 # Set the timeout to 10 minutes
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "18"
+        displayName: "Install Node.js"
+
+      - script: npm ci
+        displayName: "Install dependencies"
+
+      - script: npx playwright install --with-deps
+        displayName: "Install Playwright browsers"
+
+      - script: |
+          echo "User: $(EMAIL)"
+          echo "Password: $(PASSWORD)"
+          echo "Apibase: ${BASEAPI}"
+        displayName: "Display environment variables"
+        env:
+          CI: "true"
+          EMAIL: $(EMAIL) # Set email as an environment variable
+          PASSWORD: $(PASSWORD) # Set password as an environment variable (Azure DevOps will mask it)
+
+      # Step to run Playwright API tests
+      - script: npm run test:api
+        displayName: "Run Playwright API tests"
+
+      # Step to run Playwright E2E tests
+      - script: npm run test:e2e
+        displayName: "Run Playwright E2E tests"
+
+      - task: PublishTestResults@2
+        displayName: "Publish test results"
+        inputs:
+          searchFolder: "test-results"
+          testResultsFormat: "JUnit"
+          testResultsFiles: "junit-results.xml"
+          mergeTestResults: true
+          failTaskOnFailedTests: true
+          testRunTitle: "End-To-End Booking Room Project"
+        condition: succeededOrFailed()
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: playwright-report
+          artifact: playwright-report
+          publishLocation: "pipeline"
+        condition: succeededOrFailed()
