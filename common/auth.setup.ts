@@ -3,7 +3,6 @@ import { STORAGE_STATE_PATH } from "../playwright.config";
 import { LoginPage } from "../common/login_page";
 require("dotenv").config();
 
-// const authFile = path.join(__dirname, STORAGE_STATE_PATH + process.env.STORAGE_STATE_FILE);
 const username = process.env.EMAIL ?? "";
 const password = process.env.PASSWORD ?? "";
 

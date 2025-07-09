@@ -6,10 +6,10 @@ test.describe("Login", () => {
 
   test.use({ storageState: STORAGE_STATE_PATH + process.env.STORAGE_STATE_ADMIN_FILE });
 
-  test.only("Administration user is able to login with valid username and password @sanity @login", async ({adminPage, headerPage}) => {
+  test("Administration user is able to login with valid username and password @sanity @login", async ({ adminPage, headerPage }) => {
     await adminPage.doLogin(process.env.EMAIL?.toLowerCase(), process.env.PASSWORD);
     await expect(headerPage.roomsLink).toBeVisible();
-});
+  });
 
   test("The user is not able to login with empty username @login", async ({ adminPage }) => {
     await adminPage.doLogin("", process.env.PASSWORD);

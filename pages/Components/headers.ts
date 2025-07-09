@@ -14,12 +14,12 @@ export class Headers extends BasePage {
   }
 
   async clickOnHeaderLink(linkName: string) {
-    const headerLink = this.page.getByRole("link", { name: linkName});
+    const headerLink = this.page.getByRole("link", { name: linkName });
     await headerLink.click();
   }
 
   async verifyNotificationMessageDislayed() {
     await this.badgeMessage.waitFor({ state: "visible" });
-    expect (await this.badgeMessage.textContent()).toEqual("1");
+    expect(await this.badgeMessage.textContent()).toEqual("1");
   }
 }

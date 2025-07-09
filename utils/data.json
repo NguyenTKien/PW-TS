@@ -6,10 +6,15 @@
         "Family": "https://images.pexels.com/photos/237371/pexels-photo-237371.jpeg",
         "Twin": "https://images.pexels.com/photos/11857305/pexels-photo-11857305.jpeg"
     },
-    "apiErrors": [
+    "roomErrors": [
         "Room name must be set",
         "Type must be set",
         "must not be null",
+        "must be greater than or equal to 1"
+    ],
+    "bookingErrors": [
+        "Firstname should not be blank",
+        "Lastname should not be blank",
         "must be greater than or equal to 1"
     ],
     "errorMessage": {

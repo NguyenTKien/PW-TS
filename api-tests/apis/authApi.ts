@@ -1,40 +1,40 @@
-import { APIRequestContext, APIResponse, expect } from "@playwright/test";
-import { BaseAPI } from "./baseApi";
+import { APIRequestContext, APIResponse, expect } from "@playwright/test"
+import { BaseAPI } from "./baseApi"
 
-const auth = '/auth/login';
+const auth = "/auth/login"
 
 export class AuthenticationApi extends BaseAPI {
     constructor(request: APIRequestContext) {
-        super(request);
+        super(request)
     }
 
     async signIn(username: string, password: string) {
         const response = await this.request.post(process.env.BASE_API_URL + auth, {
             data: {
                 username: username,
-                password: password
-            }
-        });
+                password: password,
+            },
+        })
 
-        expect(response.status()).toBe(200);
+        expect(response.status()).toBe(200)
     }
-    
+
     async getResponseAuthPost(username: string, password: string | null): Promise<APIResponse> {
         const response = await this.postRequest(auth, {
             data: {
                 username: username,
-                password: password || null
-            }
+                password: password ?? null,
+            },
         })
-        return response;
+        return response
     }
 
     async getResponseValidatePost(token: string): Promise<APIResponse> {
         const response = await this.postRequest("/auth/validate/", {
             data: {
-                token: token
-            }
+                token: token,
+            },
         })
-        return response;
+        return response
     }
 }

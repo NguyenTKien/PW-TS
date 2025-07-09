@@ -12,40 +12,40 @@ test.describe("test api authentication function", async () => {
 
     //Asert
     expect(end - start).toBeLessThan(2000);
-    expect(response.status()).toBe(200);
+    await authApi.VerifyReturnStatus(response, 200);
     console.log(await response.text())
-    expect(await response.text()).toContain("token");
+    await authApi.VerifyResponseToContainText(response, "token");
   })
 
   test("POST with missing password of credentials", async ({ authApi }) => {
     const response = await authApi.getResponseAuthPost(user, null)
 
-    expect(response.status()).toBe(401);
-    expect(await response.text()).toContain("Invalid credentials");
+    await authApi.VerifyReturnStatus(response, 401);
+    await authApi.VerifyResponseToContainText(response, "Invalid credentials");
   })
 
   test("POST with invalid password credentials", async ({ authApi }) => {
     const response = await authApi.getResponseAuthPost(user, "invalid password");
 
-    expect(response.status()).toBe(401);
-    expect(await response.text()).toContain("Invalid credentials");
+    await authApi.VerifyReturnStatus(response, 401);
+    await authApi.VerifyResponseToContainText(response, "Invalid credentials");
   })
 
   test("POST verify token", async ({ authApi }) => {
     const response = await authApi.getResponseAuthPost(user, password)
 
-    expect(response.status()).toBe(200)
+    await authApi.VerifyReturnStatus(response, 200);
     const responseBody = await response.json()
     const token = responseBody.token
     console.log("Token: ", token)
 
     const responseValidate = await authApi.getResponseValidatePost(token)
-    expect(responseValidate.status()).toBe(200)
+    await authApi.VerifyReturnStatus(responseValidate, 200);
   })
 
   test("POST verify token expired", async ({ authApi }) => {
     const responseValidate = await authApi.getResponseValidatePost("xwmljVEWmY3VoOlD");
-    expect(responseValidate.status()).toBe(403);
-    expect(await responseValidate.text()).toContain("Invalid token")
+    await authApi.VerifyReturnStatus(responseValidate, 403);
+    await authApi.VerifyResponseToContainText(responseValidate, "Invalid token");
   })
 })

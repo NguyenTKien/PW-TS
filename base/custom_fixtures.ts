@@ -1,10 +1,11 @@
 import { test as base } from '@playwright/test';
-import { AdminPage } from "../pages/adminPage";
+import { AdminPage } from "../pages/admin-page/adminPage";
 import { BookingPage } from "../pages/bookingPage";
-import { RoomPage } from "../pages/roomPage";
+import { RoomPage } from "../pages/admin-page/roomPage";
 import { Headers } from '../pages/Components/headers';
-import { FrontPage } from '../pages/frontPage';
+import { FrontPage } from '../pages/front-page/frontPage';
 import { MessagePage } from '../pages/messagePage';
+import { RoomsPage } from '../pages/front-page/roomPages';
 
 type MyFixtures = {
     adminPage: AdminPage;
@@ -13,8 +14,7 @@ type MyFixtures = {
     headerPage: Headers;
     frontPage: FrontPage;
     messagePage: MessagePage;
-    frontPage: FrontPage;
-    messagePage: MessagePage;
+    roomsPage: RoomsPage
 };
 
 export const test = base.extend<MyFixtures>({
@@ -51,5 +51,10 @@ export const test = base.extend<MyFixtures>({
         const messagePage = new MessagePage(page);
         // await messagePage.waitForMessagePage();
         await use(messagePage);
+    },
+
+    roomsPage: async ({ page }, use) => {
+        const roomsPage = new RoomsPage(page);
+        await use(roomsPage);
     }
 })

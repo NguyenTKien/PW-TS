@@ -13,10 +13,34 @@ export function getCurrentDate(): string {
   return new Date().toISOString().split("T")[0];
 }
 
-export function getTheDateFromCurrectDate(days: number): number {
-  const futureDate = getFutureDate(days);
-  const date = new Date(futureDate);
-  return date.getDate();
+export function isLastDateOfMonth(): boolean {
+  const givenDate = new Date();
+  const year = givenDate.getFullYear();
+  const month = givenDate.getMonth();
+
+  // Get the last date of the month
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  // Check if the given date is the last date of the month
+  return givenDate.getDate() === lastDate;
+}
+
+export function formatDate(dateString: string): string {
+  return dateString.replace(/(\d{4})-(\d{2})-(\d{2})/, (_, year, month, day) => {
+    return `${day}/${month}/${year}`;
+  });
+}
+
+export function getLastDateOfMonth(): string {
+  const currentDate = new Date();
+  const lastDateOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+  // Format the date as "yyyy-mm-dd"
+  const year = lastDateOfMonth.getFullYear();
+  const month = String(lastDateOfMonth.getMonth() + 1).padStart(2, "0"); // Ensure 2-digit month
+  const day = String(lastDateOfMonth.getDate()).padStart(2, "0"); // Ensure 2-digit day
+
+  return `${year}-${month}-${day}`;
 }
 
 export function getFutureDate(days: number): string {
@@ -25,7 +49,7 @@ export function getFutureDate(days: number): string {
   return date.toISOString().split("T")[0];
 }
 
-export function getFirstDateOfMonth(): string { 
+export function getFirstDateOfMonth(): string {
   const date = new Date();
   return date.getFullYear.toString + "-" + date.getMonth.toString + "-" + "01";
 }
@@ -50,9 +74,9 @@ export function readJsonData(file_path: string) {
   }
 }
 
-export function getExtendImages(roomType: RoomType): string {
+export function getExtendImages(roomType?: RoomType): string {
   if (roomType == RoomType.SINGLE) {
-    return json.imageUrl.Single ;
+    return json.imageUrl.Single;
   } else if (roomType == RoomType.DOUBLE) {
     return json.imageUrl.Double
   } else if (roomType == RoomType.FAMILY) {

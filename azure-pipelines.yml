@@ -6,48 +6,87 @@ pool: Default
 variables:
   - group: FileConfig
 
-jobs:
-  - job: BuildAndTest
-    timeoutInMinutes: 10 # Set the timeout to 60 minutes
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "18"
-        displayName: "Install Node.js"
+stages:
+  # Stage 1: Run API Tests
+  - stage: ApiTests
+    displayName: "Run API Tests"
+    jobs:
+      - job: ApiTestsJob
+        displayName: "Run Playwright API Tests"
+        timeoutInMinutes: 10
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "18"
+            displayName: "Install Node.js"
 
-      - script: npm ci
-        displayName: "npm ci"
+          - script: npm ci
+            displayName: "Install dependencies"
 
-      - script: npx playwright install --with-deps
-        displayName: "Install Playwright browsers"
+          - script: npx playwright install --with-deps
+            displayName: "Install Playwright browsers"
 
-      - script: |
-          echo "User: $(EMAIL)"
-          echo "Password: $(PASSWORD)"
-          echo "Apibase: ${BASEAPI}"
-        displayName: "Display variables"
-        env:
-          CI: "true"
-          EMAIL: $(EMAIL) # Set email as an environment variable
-          PASSWORD: $(PASSWORD) # Set password as an environment variable (Azure DevOps will mask it)
+          - script:
+              npm run test:api
+            displayName: "Run Playwright API tests"
 
-      - script: npm run test:e2e
-        displayName: "Run Playwright tests"
+          - task: PublishTestResults@2
+            displayName: "Publish API test results"
+            inputs:
+              searchFolder: "test-results"
+              testResultsFormat: "JUnit"
+              testResultsFiles: "**/report-results.xml"
+              mergeTestResults: true
+              failTaskOnFailedTests: true
+              testRunTitle: "API Test Results"
+            condition: succeededOrFailed()
 
-      - task: PublishTestResults@2
-        displayName: "Publish test results"
-        inputs:
-          searchFolder: "test-results"
-          testResultsFormat: "JUnit"
-          testResultsFiles: "junit-results.xml"
-          mergeTestResults: true
-          failTaskOnFailedTests: true
-          testRunTitle: "End-To-End Booking Room Project"
-        condition: succeededOrFailed()
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: test-results
+              artifact: playwright-report-api
+              publishLocation: "pipeline"
+            condition: succeededOrFailed()
 
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: playwright-report
-          artifact: playwright-report
-          publishLocation: "pipeline"
-        condition: succeededOrFailed()
+  # Stage 2: Run E2E Tests
+  - stage: E2ETests
+    displayName: "Run E2E Tests"
+    dependsOn: ApiTests
+    condition: succeededOrFailed() # Run E2E tests even if API tests fail
+    jobs:
+      - job: E2ETestsJob
+        displayName: "Run Playwright E2E Tests"
+        timeoutInMinutes: 10
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "18"
+            displayName: "Install Node.js"
+
+          - script: npm ci
+            displayName: "Install dependencies"
+
+          - script: npx playwright install --with-deps
+            displayName: "Install Playwright browsers"
+
+          - script: |
+              npm run test:e2e
+            displayName: "Run Playwright E2E tests"
+
+          - task: PublishTestResults@2
+            displayName: "Publish E2E test results"
+            inputs:
+              searchFolder: "test-results"
+              testResultsFormat: "JUnit"
+              testResultsFiles: "**/report-results.xml"
+              mergeTestResults: true
+              failTaskOnFailedTests: true
+              testRunTitle: "E2E Test Results"
+            condition: succeededOrFailed()  
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: test-results
+              artifact: playwright-report-e2e
+              publishLocation: "pipeline"
+            condition: succeededOrFailed()  

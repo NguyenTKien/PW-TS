@@ -1,0 +1,45 @@
+- navigation:
+  - link "Restful Booker Platform Demo"
+  - list:
+    - listitem:
+      - link "Rooms"
+    - listitem:
+      - link "Report"
+    - listitem:
+      - link "Branding"
+    - listitem:
+      - link /Messages \d+/
+  - list:
+    - listitem:
+      - link "Front Page"
+    - listitem:
+      - button "Logout"
+- paragraph: "Room #"
+- paragraph: Type
+- paragraph: Accessible
+- paragraph: Price
+- paragraph: Room details
+- textbox
+- combobox:
+  - option "Single" [selected]
+  - option "Twin"
+  - option "Double"
+  - option "Family"
+  - option "Suite"
+- combobox:
+  - option "false" [selected]
+  - option "true"
+- textbox
+- checkbox "WiFi"
+- text: WiFi
+- checkbox "TV"
+- text: TV
+- checkbox "Radio"
+- text: Radio
+- checkbox "Refreshments"
+- text: Refreshments
+- checkbox "Safe"
+- text: Safe
+- checkbox "Views"
+- text: Views
+- button "Create"
