@@ -13,39 +13,41 @@ type MyFixtures = {
     headerPage: Headers;
     frontPage: FrontPage;
     messagePage: MessagePage;
+    frontPage: FrontPage;
+    messagePage: MessagePage;
 };
 
 export const test = base.extend<MyFixtures>({
-    adminPage: async({ page }, use) => {
+    adminPage: async ({ page }, use) => {
         const adminPage = new AdminPage(page);
         await adminPage.openURL("/admin");
         await use(adminPage);
     },
 
-    roomPage: async({ page }, use) => {
+    roomPage: async ({ page }, use) => {
         const roomPage = new RoomPage(page);
         await roomPage.goToRoomPage();
         await use(roomPage);
     },
 
-    bookingPage: async({ page }, use) => {
+    bookingPage: async ({ page }, use) => {
         const bookingPage = new BookingPage(page);
         await bookingPage.goToBookingPage();
         await use(bookingPage);
     },
 
-    headerPage: async({ page }, use) => {
+    headerPage: async ({ page }, use) => {
         const headerPage = new Headers(page);
         await use(headerPage);
-    }, 
+    },
 
-    frontPage: async({page}, use) => {
+    frontPage: async ({ page }, use) => {
         const frontPage = new FrontPage(page);
         await frontPage.waitForFrontPage();
         await use(frontPage);
     },
 
-    messagePage: async({page}, use) => {
+    messagePage: async ({ page }, use) => {
         const messagePage = new MessagePage(page);
         // await messagePage.waitForMessagePage();
         await use(messagePage);
